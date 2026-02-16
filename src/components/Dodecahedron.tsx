@@ -8,218 +8,196 @@ import * as THREE from "three";
 // ─── Constants ───────────────────────────────────────────────────────────────
 const RADIUS = 2.5;
 const phi = (1 + Math.sqrt(5)) / 2;
+const AUTO_ROTATE_SPEED = 0.15;
+
+// Pentagon clip-path matching a centered regular pentagon
+const PENTAGON_CLIP =
+    "polygon(50% 0%, 97.55% 34.55%, 79.39% 90.45%, 20.61% 90.45%, 2.45% 34.55%)";
 
 // ─── Face Data ───────────────────────────────────────────────────────────────
-// The 12 face normals of a dodecahedron correspond to the vertices of its dual,
-// the icosahedron. These are cyclic permutations of (0, ±1, ±φ).
-
 interface FaceData {
     direction: [number, number, number];
     label: string;
+    accent: string;
     content: React.ReactNode;
 }
 
+function FaceCard({
+    accent,
+    children,
+    index = 0,
+}: {
+    accent: string;
+    children: React.ReactNode;
+    index?: number;
+}) {
+    // Stagger fade-in: starts after loader (15s) + fade (1s)
+    const delay = 16 + index * 0.3;
+    return (
+        <div
+            className="animate-line flex flex-col items-center justify-center gap-1 p-4 text-center"
+            style={{
+                width: "160px",
+                height: "160px",
+                clipPath: PENTAGON_CLIP,
+                background: "rgba(255, 255, 255, 0.85)",
+                boxShadow: `inset 0 0 0 1.5px ${accent}`,
+                animationDelay: `${delay}s`,
+            }}
+        >
+            {children}
+        </div>
+    );
+}
+
 const FACE_DEFINITIONS: FaceData[] = [
-    // ── Group 1: (0, ±1, ±φ) ──
     {
         direction: [0, 1, phi],
         label: "Portrait",
+        accent: "rgba(6,182,212,0.6)",
         content: (
-            <div className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-black/70 px-8 py-6 text-center backdrop-blur-md">
-                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600" />
-                <h2 className="text-lg font-bold tracking-tight text-white">
-                    Simon Shenghua Jin
-                </h2>
-                <p className="text-xs font-medium tracking-widest text-cyan-300/80 uppercase">
-                    Robotics &nbsp;|&nbsp; ML &nbsp;|&nbsp; Software
+            <FaceCard accent="rgba(6,182,212,0.6)" index={0}>
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600" />
+                <h2 className="text-sm font-bold text-zinc-900">Simon Shenghua Jin</h2>
+                <p className="text-[9px] tracking-widest text-cyan-600 uppercase">
+                    Robotics | ML | Software
                 </p>
-            </div>
+            </FaceCard>
         ),
     },
     {
         direction: [0, -1, -phi],
         label: "Footer",
+        accent: "rgba(120,120,120,0.4)",
         content: (
-            <div className="flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-black/70 px-8 py-5 backdrop-blur-md">
-                <p className="text-xs font-semibold tracking-widest text-zinc-400 uppercase">
-                    Connect
-                </p>
-                <div className="flex gap-4">
-                    <a href="#" className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/20">
-                        LinkedIn
-                    </a>
-                    <a href="#" className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/20">
-                        GitHub
-                    </a>
-                    <a href="#" className="rounded-lg bg-cyan-500/20 px-3 py-1.5 text-xs font-medium text-cyan-300 transition hover:bg-cyan-500/30">
-                        Resume ↓
-                    </a>
+            <FaceCard accent="rgba(120,120,120,0.4)" index={1}>
+                <p className="text-[9px] font-semibold tracking-widest text-zinc-500 uppercase">Connect</p>
+                <div className="flex gap-2">
+                    <span className="rounded bg-zinc-200 px-2 py-1 text-[9px] text-zinc-700">LinkedIn</span>
+                    <span className="rounded bg-zinc-200 px-2 py-1 text-[9px] text-zinc-700">GitHub</span>
+                    <span className="rounded bg-cyan-100 px-2 py-1 text-[9px] text-cyan-700">Resume</span>
                 </div>
-            </div>
+            </FaceCard>
         ),
     },
     {
         direction: [0, 1, -phi],
         label: "HardHaQ",
+        accent: "rgba(245,158,11,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-amber-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-amber-400 uppercase">
-                    🏆 1st Place
-                </span>
-                <h3 className="text-sm font-bold text-white">HardHaQ 2026</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    Quantum Hardware Hackathon — designed &amp; prototyped a novel qubit
-                    control interface.
-                </p>
-            </div>
+            <FaceCard accent="rgba(245,158,11,0.5)" index={2}>
+                <span className="text-[8px] font-bold tracking-widest text-amber-600 uppercase">🏆 1st Place</span>
+                <h3 className="text-xs font-bold text-zinc-900">HardHaQ 2026</h3>
+                <p className="text-[9px] text-zinc-500">Quantum Hardware Hackathon</p>
+            </FaceCard>
         ),
     },
     {
         direction: [0, -1, phi],
         label: "HackML",
+        accent: "rgba(139,92,246,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-violet-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-violet-400 uppercase">
-                    Machine Learning
-                </span>
-                <h3 className="text-sm font-bold text-white">HackML</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    K-fold cross-validation pipeline for robust model evaluation &amp;
-                    hyperparameter tuning.
-                </p>
-            </div>
+            <FaceCard accent="rgba(139,92,246,0.5)" index={3}>
+                <span className="text-[8px] font-bold tracking-widest text-violet-600 uppercase">Machine Learning</span>
+                <h3 className="text-xs font-bold text-zinc-900">HackML</h3>
+                <p className="text-[9px] text-zinc-500">K-fold cross-validation</p>
+            </FaceCard>
         ),
     },
-
-    // ── Group 2: (±1, ±φ, 0) ──
     {
         direction: [1, phi, 0],
         label: "Hardware",
+        accent: "rgba(16,185,129,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-emerald-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-emerald-400 uppercase">
-                    Hardware
-                </span>
-                <h3 className="text-sm font-bold text-white">Custom Macropad</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    Hall-effect switches, KiCad PCB design, 3D-printed enclosure with
-                    sub-0.1mm tolerances.
-                </p>
-            </div>
+            <FaceCard accent="rgba(16,185,129,0.5)" index={4}>
+                <span className="text-[8px] font-bold tracking-widest text-emerald-600 uppercase">Hardware</span>
+                <h3 className="text-xs font-bold text-zinc-900">Custom Macropad</h3>
+                <p className="text-[9px] text-zinc-500">Hall-effect · KiCad PCB</p>
+            </FaceCard>
         ),
     },
     {
         direction: [-1, phi, 0],
         label: "Leadership",
+        accent: "rgba(244,63,94,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-rose-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-rose-400 uppercase">
-                    Leadership
-                </span>
-                <h3 className="text-sm font-bold text-white">FTC Team Parabellum</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    3-year captain — led team to European Internationals. Mentored 20+
-                    junior members.
-                </p>
-            </div>
+            <FaceCard accent="rgba(244,63,94,0.5)" index={5}>
+                <span className="text-[8px] font-bold tracking-widest text-rose-600 uppercase">Leadership</span>
+                <h3 className="text-xs font-bold text-zinc-900">FTC Parabellum</h3>
+                <p className="text-[9px] text-zinc-500">3-Year Captain · EU Intl.</p>
+            </FaceCard>
         ),
     },
     {
         direction: [1, -phi, 0],
         label: "HUDson",
+        accent: "rgba(59,130,246,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-blue-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-blue-400 uppercase">
-                    Software
-                </span>
-                <h3 className="text-sm font-bold text-white">HUDson</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    nwHacks 2026 — Best Use of ElevenLabs API. Real-time HUD overlay
-                    system.
-                </p>
-            </div>
+            <FaceCard accent="rgba(59,130,246,0.5)" index={6}>
+                <span className="text-[8px] font-bold tracking-widest text-blue-600 uppercase">Software</span>
+                <h3 className="text-xs font-bold text-zinc-900">HUDson</h3>
+                <p className="text-[9px] text-zinc-500">nwHacks · ElevenLabs API</p>
+            </FaceCard>
         ),
     },
     {
         direction: [-1, -phi, 0],
         label: "Air Mouse",
+        accent: "rgba(249,115,22,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-orange-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-orange-400 uppercase">
-                    Integration
-                </span>
-                <h3 className="text-sm font-bold text-white">Air Mouse</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    JourneyHacks 2026 Surge Choice Award — gesture-controlled cursor via
-                    IMU sensor fusion.
-                </p>
-            </div>
+            <FaceCard accent="rgba(249,115,22,0.5)" index={7}>
+                <span className="text-[8px] font-bold tracking-widest text-orange-600 uppercase">Integration</span>
+                <h3 className="text-xs font-bold text-zinc-900">Air Mouse</h3>
+                <p className="text-[9px] text-zinc-500">JourneyHacks · IMU Fusion</p>
+            </FaceCard>
         ),
     },
-
-    // ── Group 3: (±φ, 0, ±1) ──
     {
         direction: [phi, 0, 1],
         label: "Solder Bot",
+        accent: "rgba(20,184,166,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-teal-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-teal-400 uppercase">
-                    Mechatronics
-                </span>
-                <h3 className="text-sm font-bold text-white">No-Shake Solder Bot</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    Dum-E / Dum-IER — robotic teleoperation platform for precision
-                    soldering tasks.
-                </p>
-            </div>
+            <FaceCard accent="rgba(20,184,166,0.5)" index={8}>
+                <span className="text-[8px] font-bold tracking-widest text-teal-600 uppercase">Mechatronics</span>
+                <h3 className="text-xs font-bold text-zinc-900">Solder Bot</h3>
+                <p className="text-[9px] text-zinc-500">Dum-E · Teleoperation</p>
+            </FaceCard>
         ),
     },
     {
         direction: [-phi, 0, 1],
         label: "Research",
+        accent: "rgba(99,102,241,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-indigo-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-indigo-400 uppercase">
-                    Research
-                </span>
-                <h3 className="text-sm font-bold text-white">Robotics Lab</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    OBJ → URDF conversion scripts, ROS integration, Docker-containerized
-                    simulation pipelines.
-                </p>
-            </div>
+            <FaceCard accent="rgba(99,102,241,0.5)" index={9}>
+                <span className="text-[8px] font-bold tracking-widest text-indigo-600 uppercase">Research</span>
+                <h3 className="text-xs font-bold text-zinc-900">Robotics Lab</h3>
+                <p className="text-[9px] text-zinc-500">OBJ→URDF · ROS · Docker</p>
+            </FaceCard>
         ),
     },
     {
         direction: [phi, 0, -1],
         label: "Quant",
+        accent: "rgba(234,179,8,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-yellow-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-yellow-400 uppercase">
-                    Quant Finance
-                </span>
-                <h3 className="text-sm font-bold text-white">CPABC Case Competition</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    Quantitative financial analysis &amp; portfolio optimization strategy
-                    presentation.
-                </p>
-            </div>
+            <FaceCard accent="rgba(234,179,8,0.5)" index={10}>
+                <span className="text-[8px] font-bold tracking-widest text-yellow-600 uppercase">Quant Finance</span>
+                <h3 className="text-xs font-bold text-zinc-900">CPABC Competition</h3>
+                <p className="text-[9px] text-zinc-500">Portfolio Optimization</p>
+            </FaceCard>
         ),
     },
     {
         direction: [-phi, 0, -1],
         label: "Awards",
+        accent: "rgba(236,72,153,0.5)",
         content: (
-            <div className="flex w-48 flex-col gap-2 rounded-2xl border border-pink-500/20 bg-black/70 px-6 py-5 backdrop-blur-md">
-                <span className="text-[10px] font-bold tracking-widest text-pink-400 uppercase">
-                    Awards
-                </span>
-                <h3 className="text-sm font-bold text-white">Scholarships</h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                    Matthew Leduc Scholarship &amp; SFU Alumni Scholarship — academic
-                    excellence in engineering.
-                </p>
-            </div>
+            <FaceCard accent="rgba(236,72,153,0.5)" index={11}>
+                <span className="text-[8px] font-bold tracking-widest text-pink-600 uppercase">Awards</span>
+                <h3 className="text-xs font-bold text-zinc-900">Scholarships</h3>
+                <p className="text-[9px] text-zinc-500">Leduc · SFU Alumni</p>
+            </FaceCard>
         ),
     },
 ];
@@ -232,14 +210,17 @@ interface ComputedFace {
 }
 
 function computeFaces(): ComputedFace[] {
-    const up = new THREE.Vector3(0, 0, 1); // default Html "forward" direction
-
     return FACE_DEFINITIONS.map((face) => {
         const dir = new THREE.Vector3(...face.direction).normalize();
         const position = dir.clone().multiplyScalar(RADIUS);
 
-        // Quaternion that rotates the default forward (0,0,1) to face outward
-        const quaternion = new THREE.Quaternion().setFromUnitVectors(up, dir);
+        // Use lookAt for consistent face orientation with stable "up"
+        const obj = new THREE.Object3D();
+        obj.position.copy(position);
+        obj.lookAt(0, 0, 0);
+        // lookAt makes -Z point toward origin; flip so HTML faces outward
+        obj.rotateY(Math.PI);
+        const quaternion = obj.quaternion.clone();
 
         return { position, quaternion, data: face };
     });
@@ -249,32 +230,38 @@ function computeFaces(): ComputedFace[] {
 export default function Dodecahedron() {
     const meshRef = useRef<THREE.Mesh>(null);
     const groupRef = useRef<THREE.Group>(null);
-
     const faces = useMemo(() => computeFaces(), []);
 
-    // Gentle continuous rotation
+    // Gentle passive rotation
     useFrame((_state, delta) => {
         if (groupRef.current) {
-            groupRef.current.rotation.y += delta * 0.08;
-            groupRef.current.rotation.x += delta * 0.04;
+            groupRef.current.rotation.y += delta * AUTO_ROTATE_SPEED;
         }
     });
 
     return (
-        <group ref={groupRef}>
-            {/* Wireframe base geometry */}
+        <group ref={groupRef} position={[1.5, 0, 0]}>
+            {/* Translucent geometry base */}
             <mesh ref={meshRef}>
                 <dodecahedronGeometry args={[RADIUS, 0]} />
                 <meshStandardMaterial
-                    color="#1e90ff"
-                    wireframe
+                    color="#e2e8f0"
                     transparent
                     opacity={0.15}
+                    side={THREE.DoubleSide}
                 />
             </mesh>
 
+            {/* Thin black pentagonal edges */}
+            <lineSegments>
+                <edgesGeometry
+                    args={[new THREE.DodecahedronGeometry(RADIUS, 0), 1]}
+                />
+                <lineBasicMaterial color="#000000" />
+            </lineSegments>
+
             {/* HTML overlays on each face */}
-            {faces.map((face, i) => (
+            {faces.map((face) => (
                 <group
                     key={face.data.label}
                     position={face.position}
@@ -283,10 +270,7 @@ export default function Dodecahedron() {
                     <Html
                         transform
                         distanceFactor={8}
-                        style={{
-                            pointerEvents: "auto",
-                            userSelect: "none",
-                        }}
+                        style={{ pointerEvents: "auto", userSelect: "none" }}
                     >
                         {face.data.content}
                     </Html>

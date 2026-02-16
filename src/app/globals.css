@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
-  --foreground: #ededed;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 @theme inline {
@@ -15,4 +15,22 @@ body {
   color: var(--foreground);
   margin: 0;
   overflow: hidden;
+}
+
+/* Line-by-line bio reveal animation */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-line {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
 }
