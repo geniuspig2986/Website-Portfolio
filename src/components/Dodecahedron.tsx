@@ -8,8 +8,69 @@ import * as THREE from "three";
 // ─── Constants ───────────────────────────────────────────────────────────────
 const RADIUS = 2.5;
 const phi = (1 + Math.sqrt(5)) / 2;
-const AUTO_ROTATE_SPEED = 0.15;
-const PANEL_DELAY_MS = 16_000;
+const ROTATE_SPEED = (2 * Math.PI) / 30; // 360° per 30s (slow tumble)
+
+// Phase timing (seconds)
+const PENT_PHASE = 2;     // pentagon tilts face-down
+const EDGE_DRAW_END = 5;  // edges fully drawn
+const PANEL_DELAY_MS = (EDGE_DRAW_END + 1) * 1000;
+
+// ─── Pre-rotate dodecahedron so one face aligns with -Y ─────────────────────
+function createAlignedDodecGeo() {
+    const geo = new THREE.DodecahedronGeometry(RADIUS, 0);
+    const posAttr = geo.getAttribute("position");
+    const idx = geo.getIndex()!;
+    const downDir = new THREE.Vector3(0, -1, 0);
+    let bestNormal = new THREE.Vector3();
+    let bestDot = -Infinity;
+    for (let i = 0; i < idx.count; i += 3) {
+        const a = new THREE.Vector3().fromBufferAttribute(posAttr, idx.getX(i));
+        const b = new THREE.Vector3().fromBufferAttribute(posAttr, idx.getX(i + 1));
+        const c = new THREE.Vector3().fromBufferAttribute(posAttr, idx.getX(i + 2));
+        const n = new THREE.Triangle(a, b, c).getNormal(new THREE.Vector3());
+        const d = n.dot(downDir);
+        if (d > bestDot) { bestDot = d; bestNormal = n.clone(); }
+    }
+    const alignQ = new THREE.Quaternion().setFromUnitVectors(bestNormal, downDir);
+    geo.applyQuaternion(alignQ);
+    return geo;
+}
+
+// ─── Edge extraction with bottom-to-top sorting ──────────────────────────────
+interface SortedEdge {
+    ax: number; ay: number; az: number;
+    bx: number; by: number; bz: number;
+    sortY: number;
+}
+
+function extractSortedEdges(geo: THREE.BufferGeometry): SortedEdge[] {
+    const edges = new THREE.EdgesGeometry(geo, 1);
+    const pos = edges.getAttribute('position');
+    const segs: SortedEdge[] = [];
+    for (let i = 0; i < pos.count; i += 2) {
+        const ax = pos.getX(i), ay = pos.getY(i), az = pos.getZ(i);
+        const bx = pos.getX(i + 1), by = pos.getY(i + 1), bz = pos.getZ(i + 1);
+        segs.push({ ax, ay, az, bx, by, bz, sortY: Math.min(ay, by) });
+    }
+    segs.sort((a, b) => a.sortY - b.sortY); // bottom first
+    return segs;
+}
+
+// ─── Flat pentagon (point-down) geometry ─────────────────────────────────────
+function createPentagonGeo() {
+    const a = RADIUS * 4 / (Math.sqrt(3) * (1 + Math.sqrt(5)));
+    const faceR = a / (2 * Math.sin(Math.PI / 5));
+    const shape = new THREE.Shape();
+    for (let i = 0; i < 5; i++) {
+        const angle = -Math.PI / 2 + i * (2 * Math.PI) / 5;
+        const x = faceR * Math.cos(angle);
+        const y = faceR * Math.sin(angle);
+        if (i === 0) shape.moveTo(x, y);
+        else shape.lineTo(x, y);
+    }
+    shape.closePath();
+    return new THREE.ShapeGeometry(shape);
+}
 
 // Pentagon clip-path matching a centered regular pentagon
 const PENTAGON_CLIP =
@@ -32,7 +93,7 @@ function FaceCard({
     children: React.ReactNode;
     index?: number;
 }) {
-    const delay = 16 + index * 0.3;
+    const delay = 8 + index * 0.3;
     return (
         <div
             className="animate-line flex flex-col items-center justify-center gap-1 p-4 text-center"
@@ -209,8 +270,7 @@ interface ComputedFace {
     data: FaceData;
 }
 
-function computeFaces(): ComputedFace[] {
-    const geo = new THREE.DodecahedronGeometry(RADIUS, 0);
+function computeFaces(geo: THREE.DodecahedronGeometry | THREE.BufferGeometry): ComputedFace[] {
     const posAttr = geo.getAttribute("position");
     const index = geo.getIndex();
     if (!index) return [];
@@ -274,46 +334,161 @@ function computeFaces(): ComputedFace[] {
     });
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+// ─── Component ────────────────────────────────────────────────────────────────
 export default function Dodecahedron() {
-    const meshRef = useRef<THREE.Mesh>(null);
     const groupRef = useRef<THREE.Group>(null);
-    const faces = useMemo(() => computeFaces(), []);
+    const pentGroupRef = useRef<THREE.Group>(null);
+    const edgeLinesRef = useRef<THREE.LineSegments>(null);
+
+    // Pre-rotated dodecahedron with one face at -Y
+    const alignedGeo = useMemo(() => createAlignedDodecGeo(), []);
+    const faces = useMemo(() => computeFaces(alignedGeo), [alignedGeo]);
+    const pentGeo = useMemo(() => createPentagonGeo(), []);
+    const pentEdgesGeo = useMemo(() => new THREE.EdgesGeometry(pentGeo), [pentGeo]);
     const [showPanels, setShowPanels] = useState(false);
+
+    // Sorted edges from aligned geometry
+    const sortedEdges = useMemo(() => extractSortedEdges(alignedGeo), [alignedGeo]);
+    const morphGeo = useMemo(() => {
+        const geo = new THREE.BufferGeometry();
+        const positions = new Float32Array(sortedEdges.length * 6);
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        return geo;
+    }, [sortedEdges]);
 
     useEffect(() => {
         const timer = setTimeout(() => setShowPanels(true), PANEL_DELAY_MS);
         return () => clearTimeout(timer);
     }, []);
 
-    useFrame((_state, delta) => {
-        if (groupRef.current) {
-            groupRef.current.rotation.y += delta * AUTO_ROTATE_SPEED;
+    // Tilt quaternion: pentagon +Z normal → face-down -Y
+    const tiltQuat = useMemo(
+        () => new THREE.Quaternion().setFromUnitVectors(
+            new THREE.Vector3(0, 0, 1),
+            new THREE.Vector3(0, -1, 0)
+        ), []);
+    const identityQuat = useMemo(() => new THREE.Quaternion(), []);
+    const tempQuat = useMemo(() => new THREE.Quaternion(), []);
+    const tumbleQuat = useMemo(() => new THREE.Quaternion(), []);
+    const qx = useMemo(() => new THREE.Quaternion(), []);
+    const qy = useMemo(() => new THREE.Quaternion(), []);
+    const axisX = useMemo(() => new THREE.Vector3(1, 0, 0), []);
+    const axisY = useMemo(() => new THREE.Vector3(0, 1, 0), []);
+
+    useFrame(({ clock }) => {
+        if (!groupRef.current) return;
+        const elapsed = clock.getElapsedTime();
+
+        const pent = pentGroupRef.current;
+        const edgeLines = edgeLinesRef.current;
+
+        if (elapsed < PENT_PHASE) {
+            // Phase 1: Pentagon tilts from facing camera to face-down
+            const progress = elapsed / PENT_PHASE;
+            const ease = progress * progress * (3 - 2 * progress); // smoothstep
+            tempQuat.slerpQuaternions(identityQuat, tiltQuat, ease);
+            groupRef.current.quaternion.copy(tempQuat);
+
+            if (pent) { pent.visible = true; pent.scale.setScalar(1); }
+            if (edgeLines) edgeLines.visible = false;
+
+        } else if (elapsed < EDGE_DRAW_END) {
+            // Phase 2: edges draw bottom-to-top from pentagon corners
+            // Keep tilt orientation (no tumble yet)
+            groupRef.current.quaternion.copy(tiltQuat);
+
+            const p = (elapsed - PENT_PHASE) / (EDGE_DRAW_END - PENT_PHASE);
+            const ease = 1 - Math.pow(1 - p, 2); // ease-out quad
+
+            // Pentagon shrinks away at start of edge drawing
+            if (pent) {
+                pent.visible = ease < 0.4;
+                pent.scale.setScalar(Math.max(0, 1 - ease * 3));
+            }
+
+            // Reveal edges bottom-to-top
+            if (edgeLines) {
+                edgeLines.visible = true;
+                const posAttr = morphGeo.getAttribute('position') as THREE.BufferAttribute;
+                const arr = posAttr.array as Float32Array;
+                const total = sortedEdges.length;
+                const revealCount = Math.ceil(ease * total);
+
+                for (let i = 0; i < total; i++) {
+                    const off = i * 6;
+                    const seg = sortedEdges[i];
+                    if (i < revealCount) {
+                        const edgeProgress = Math.min(1, (ease * total - i) / 3);
+                        const ep = edgeProgress * edgeProgress;
+                        arr[off] = seg.ax * ep;
+                        arr[off + 1] = seg.ay * ep;
+                        arr[off + 2] = seg.az * ep;
+                        arr[off + 3] = seg.bx * ep;
+                        arr[off + 4] = seg.by * ep;
+                        arr[off + 5] = seg.bz * ep;
+                    } else {
+                        arr[off] = arr[off + 1] = arr[off + 2] = 0;
+                        arr[off + 3] = arr[off + 4] = arr[off + 5] = 0;
+                    }
+                }
+                posAttr.needsUpdate = true;
+                morphGeo.computeBoundingSphere();
+            }
+
+        } else {
+            // Phase 3+: construction complete, begin slow tumble
+            if (pent) pent.visible = false;
+
+            // Slow tumble starting FROM the tilt orientation
+            const tumbleT = (elapsed - EDGE_DRAW_END) * ROTATE_SPEED;
+            qx.setFromAxisAngle(axisX, tumbleT);
+            qy.setFromAxisAngle(axisY, -tumbleT);
+            tumbleQuat.copy(qx).multiply(qy);
+            tempQuat.copy(tumbleQuat).premultiply(tiltQuat);
+            groupRef.current.quaternion.copy(tempQuat);
+
+            // Set all edges to final positions
+            if (edgeLines) {
+                edgeLines.visible = true;
+                const posAttr = morphGeo.getAttribute('position') as THREE.BufferAttribute;
+                const arr = posAttr.array as Float32Array;
+                for (let i = 0; i < sortedEdges.length; i++) {
+                    const off = i * 6;
+                    const seg = sortedEdges[i];
+                    arr[off] = seg.ax;
+                    arr[off + 1] = seg.ay;
+                    arr[off + 2] = seg.az;
+                    arr[off + 3] = seg.bx;
+                    arr[off + 4] = seg.by;
+                    arr[off + 5] = seg.bz;
+                }
+                posAttr.needsUpdate = true;
+                morphGeo.computeBoundingSphere();
+            }
         }
     });
 
     return (
-        <group ref={groupRef} position={[1.5, 0, 0]}>
-            {/* Geometry base */}
-            <mesh ref={meshRef}>
-                <dodecahedronGeometry args={[RADIUS, 0]} />
-                <meshStandardMaterial
-                    color="#e2e8f0"
-                    transparent
-                    opacity={0.15}
-                    side={THREE.DoubleSide}
-                />
-            </mesh>
+        <group ref={groupRef}>
+            {/* ── Flat pentagon, point-down (phase 1: tilts face-down) ── */}
+            <group ref={pentGroupRef}>
+                <mesh>
+                    <primitive object={pentGeo} attach="geometry" />
+                    <meshStandardMaterial color="#d4d4d8" side={THREE.DoubleSide} />
+                </mesh>
+                <lineSegments>
+                    <primitive object={pentEdgesGeo} attach="geometry" />
+                    <lineBasicMaterial color="#000000" />
+                </lineSegments>
+            </group>
 
-            {/* Black pentagonal edges */}
-            <lineSegments>
-                <edgesGeometry
-                    args={[new THREE.DodecahedronGeometry(RADIUS, 0), 1]}
-                />
+            {/* ── Morphing edges (phase 2: bottom-to-top construction) ── */}
+            <lineSegments ref={edgeLinesRef}>
+                <primitive object={morphGeo} attach="geometry" />
                 <lineBasicMaterial color="#000000" />
             </lineSegments>
 
-            {/* HTML overlays — extracted from actual geometry for perfect alignment */}
+            {/* ── Face panels — positioned from aligned geometry ── */}
             {showPanels &&
                 faces.map((face) => (
                     <group
@@ -324,6 +499,7 @@ export default function Dodecahedron() {
                         <Html
                             transform
                             distanceFactor={6}
+                            zIndexRange={[100, 0]}
                             style={{ pointerEvents: "auto", userSelect: "none" }}
                         >
                             {face.data.content}
