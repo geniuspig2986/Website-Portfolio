@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+This is my portfolio website. I created it to showcase my skills and projects. It is still under active development. You can see the progress here: https://website-portfolio-peach-nine.vercel.app/
+
 ## Getting Started
 
 First, run the development server:
