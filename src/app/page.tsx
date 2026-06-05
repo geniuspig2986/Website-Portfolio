@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import Dodecahedron from "@/components/Dodecahedron";
 import ThemeToggle from "@/components/ThemeToggle";
+import ContactModal from "@/components/ContactModal";
 import { useTheme } from "@/components/ThemeProvider";
 import { useState, useEffect, useRef } from "react";
 
@@ -14,7 +15,7 @@ import { useState, useEffect, useRef } from "react";
 const TERMINAL_LINES = [
   { text: "> portfolio", style: "text-cyan-600 text-xs tracking-widest uppercase" },
   { text: "", style: "h-2" }, // spacer
-  { text: "Shenghua Jin", style: "text-3xl font-bold text-zinc-900 dark:text-zinc-100" },
+  { text: "Shenghua (Simon) Jin", style: "text-3xl font-bold text-zinc-900 dark:text-zinc-100" },
   { text: "", style: "h-3" }, // spacer
   { text: "Mechatronics engineer and software", style: "text-sm text-zinc-600 dark:text-zinc-400" },
   { text: "developer with a passion for robotics,", style: "text-sm text-zinc-600 dark:text-zinc-400" },
@@ -41,7 +42,7 @@ function buildCharMap() {
 
 const CHAR_MAP = buildCharMap();
 
-function TerminalText({ isReturning }: { isReturning: boolean }) {
+function TerminalText({ isReturning, onContact }: { isReturning: boolean; onContact: () => void }) {
   const charSpeed = isReturning ? 3 : 20;
   const firstLineDelay = isReturning ? 100 : 2000;
   
@@ -100,23 +101,18 @@ function TerminalText({ isReturning }: { isReturning: boolean }) {
       {allDone && (
         <div className="mt-4 animate-line flex gap-3 pointer-events-auto" style={{ animationDelay: "0s" }}>
           <a
-            href="#"
-            className="rounded border border-zinc-300 dark:border-zinc-600 px-4 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
-          >
-            view_projects
-          </a>
-          <a
             href="/resume"
             className="rounded border border-zinc-300 dark:border-zinc-600 px-4 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
           >
             view_resume
           </a>
-          <a
-            href="#"
+          <button
+            type="button"
+            onClick={onContact}
             className="rounded bg-cyan-600 px-4 py-1.5 text-xs text-white transition hover:bg-cyan-500"
           >
             contact
-          </a>
+          </button>
         </div>
       )}
     </div>
@@ -129,6 +125,7 @@ export default function Home() {
   const canvasBg = theme === "dark" ? "#0a0a0a" : "#ffffff";
   const [isExpanding, setIsExpanding] = useState(false);
   const [isReturning, setIsReturning] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
     // Check if user has visited before in this session
@@ -159,7 +156,7 @@ export default function Home() {
 
       {/* Left-side terminal text */}
       <div className={`pointer-events-none absolute inset-y-0 left-0 z-[200] flex w-[40%] flex-col justify-center px-12 transition-opacity duration-1000 ease-in-out ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
-        <TerminalText isReturning={isReturning} />
+        <TerminalText isReturning={isReturning} onContact={() => setContactOpen(true)} />
       </div>
 
       {/* 3D Canvas */}
@@ -181,6 +178,9 @@ export default function Home() {
           />
         </Canvas>
       </div>
+
+      {/* Contact compose window */}
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
     </main>
   );
 }

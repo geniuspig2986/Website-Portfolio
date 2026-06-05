@@ -404,7 +404,6 @@ const FACE_DEFINITIONS: FaceData[] = [
         label: "Resume Builder",
         slug: "resume-builder",
         accent: "rgba(16,185,129,0.5)",
-        image: "/images/resume-builder/preview.png",
         description: "A local-first AI resume builder powered by a local LLM (llama.cpp). Generates tailored LaTeX resumes from structured experience data, with live editor and Tauri-native PDF export.",
         renderContent: (handlers, isDark, isReturning) => (
             <FaceCard accent="rgba(16,185,129,0.5)" slug="resume-builder" index={9} isDark={isDark} isReturning={isReturning} {...handlers}>

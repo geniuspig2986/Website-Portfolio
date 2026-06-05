@@ -1,24 +1,90 @@
-import Link from 'next/link';
+"use client";
 
-export default function ProjectPage() {
+import TerminalCard from "@/components/TerminalCard";
+import ProjectLayout, { Section, TechTags, SpecRows } from "@/components/ProjectLayout";
+
+const ACCENT = "#6366f1";
+
+const HIGHLIGHTS = [
+    {
+        title: "IMU motion sensing",
+        body: "Reads an onboard accelerometer/gyroscope and fuses the axes into a stable orientation estimate, turning hand motion in free space into cursor movement.",
+    },
+    {
+        title: "Sensor fusion",
+        body: "Filters and combines noisy IMU readings to suppress drift and jitter, so small intentional gestures map cleanly to smooth on-screen motion.",
+    },
+    {
+        title: "HID / API integration",
+        body: "Bridges the device to the host as a pointer, translating processed motion into standard input events the operating system understands.",
+    },
+    {
+        title: "Embedded firmware",
+        body: "Tight C++ firmware samples the sensor at a fixed rate and streams cursor deltas with low latency — responsiveness is the whole point.",
+    },
+];
+
+export default function AirMousePage() {
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col pt-24 pb-12 px-6 sm:px-12 transition-colors">
-            <div className="max-w-4xl mx-auto w-full">
-                <nav className="mb-12">
-                    <Link href="/" className="inline-flex items-center text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors font-mono text-sm">
-                        ? back to portfolio
-                    </Link>
-                </nav>
-                <header className="mb-16">
-                    <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 capitalize leading-tight">
-                        air-mouse
-                    </h1>
-                </header>
-                <article className="prose prose-zinc dark:prose-invert max-w-none lg:prose-lg">
-                    <h2>?? Under Construction</h2>
-                    <p>Details for this page will be added soon.</p>
-                </article>
-            </div>
-        </div>
+        <ProjectLayout
+            slug="air-mouse"
+            title="Air Mouse"
+            tagline="A motion-controlled pointer that reads hand movement in free space — IMU sensing, sensor fusion, and low-latency firmware mapped onto standard input."
+            accent={ACCENT}
+        >
+            <Section delay={0.2} className="flex flex-col lg:flex-row gap-8 items-stretch">
+                <div className="w-full lg:w-3/5" style={{ perspective: "1000px" }}>
+                    <TerminalCard delay="0s" reverseWobble={false} className="h-full">
+                        <div className="p-6 md:p-8 font-mono text-sm bg-zinc-100/10 dark:bg-zinc-900/40 min-h-[280px] flex flex-col justify-center gap-3">
+                            <p className="text-indigo-600 dark:text-indigo-400 text-xs tracking-widest uppercase mb-2">// signal path</p>
+                            {[
+                                { node: "IMU", note: "accel + gyro @ fixed rate" },
+                                { node: "→ fusion", note: "orientation estimate" },
+                                { node: "→ filter", note: "drift / jitter removal" },
+                                { node: "→ HID", note: "cursor deltas to host" },
+                            ].map((r, i) => (
+                                <div key={i} className="flex items-baseline justify-between gap-4 border-l-2 pl-4" style={{ borderColor: ACCENT }}>
+                                    <span className="text-zinc-800 dark:text-zinc-200">{r.node}</span>
+                                    <span className="text-zinc-500 text-[11px] text-right">{r.note}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </TerminalCard>
+                </div>
+
+                <div className="w-full lg:w-2/5" style={{ perspective: "1000px" }}>
+                    <TerminalCard delay="-2s" reverseWobble={true} className="h-full">
+                        <div className="p-6 md:p-8 bg-zinc-100/10 dark:bg-zinc-900/40 min-h-[280px] flex flex-col gap-6">
+                            <SpecRows
+                                rows={[
+                                    { label: "Type", value: "Mechatronics" },
+                                    { label: "Sensing", value: "IMU (6-axis)" },
+                                    { label: "Method", value: "Sensor fusion" },
+                                    { label: "Interface", value: "USB HID" },
+                                ]}
+                            />
+                            <TechTags accent={ACCENT} items={["C++", "Python", "Embedded", "IMU", "USB HID"]} />
+                        </div>
+                    </TerminalCard>
+                </div>
+            </Section>
+
+            <Section delay={0.35}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {HIGHLIGHTS.map((h) => (
+                        <div
+                            key={h.title}
+                            className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md"
+                        >
+                            <h3 className="font-bold text-lg text-zinc-900 dark:text-zinc-100 mb-2 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full" style={{ background: ACCENT }} />
+                                {h.title}
+                            </h3>
+                            <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{h.body}</p>
+                        </div>
+                    ))}
+                </div>
+            </Section>
+        </ProjectLayout>
     );
 }

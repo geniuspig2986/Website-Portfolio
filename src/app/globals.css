@@ -94,3 +94,36 @@ body {
   background-size: 200% 100%;
   animation: shimmer 2.5s ease-in-out infinite;
 }
+
+/* Idle 3D wobble for TerminalCard (used across all project pages) */
+@keyframes wobble1 {
+  0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
+  33% { transform: perspective(1000px) rotateY(1.5deg) rotateX(0.5deg); }
+  66% { transform: perspective(1000px) rotateY(-1deg) rotateX(-0.5deg); }
+  100% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
+}
+
+@keyframes wobble2 {
+  0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
+  33% { transform: perspective(1000px) rotateY(-1.5deg) rotateX(-0.5deg); }
+  66% { transform: perspective(1000px) rotateY(1deg) rotateX(0.5deg); }
+  100% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
+}
+
+.animate-wobble-1 {
+  animation: wobble1 7.5s ease-in-out infinite;
+}
+
+.animate-wobble-2 {
+  animation: wobble2 9.2s ease-in-out infinite;
+}
+
+/* Slow fade-in (portrait reveal, project hero images) */
+@keyframes slowFadeIn {
+  0% { opacity: 0; filter: blur(4px); }
+  100% { opacity: 1; filter: blur(0px); }
+}
+
+.animate-fade-in-slow {
+  animation: slowFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

@@ -176,34 +176,6 @@ export default function PortraitPage() {
         // Enforce actual scroll layer securely bypassing body
         <div className="relative h-screen w-full bg-zinc-50 dark:bg-zinc-950 font-sans transition-colors overflow-y-auto overflow-x-hidden">
 
-            <style>{`
-                @keyframes slowFadeIn {
-                    0% { opacity: 0; filter: blur(4px); }
-                    100% { opacity: 1; filter: blur(0px); }
-                }
-                .animate-fade-in-slow {
-                    animation: slowFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-                }
-                @keyframes wobble1 {
-                    0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
-                    33% { transform: perspective(1000px) rotateY(1.5deg) rotateX(0.5deg); }
-                    66% { transform: perspective(1000px) rotateY(-1.0deg) rotateX(-0.5deg); }
-                    100% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
-                }
-                @keyframes wobble2 {
-                    0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
-                    33% { transform: perspective(1000px) rotateY(-1.5deg) rotateX(-0.5deg); }
-                    66% { transform: perspective(1000px) rotateY(1.0deg) rotateX(0.5deg); }
-                    100% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
-                }
-                .animate-wobble-1 {
-                    animation: wobble1 7.5s ease-in-out infinite;
-                }
-                .animate-wobble-2 {
-                    animation: wobble2 9.2s ease-in-out infinite;
-                }
-            `}</style>
-
             {/* Content Layer */}
             <div className="relative z-10 w-full flex flex-col items-center justify-start pb-24">
 
