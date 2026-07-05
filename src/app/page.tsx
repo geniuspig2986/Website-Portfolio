@@ -178,14 +178,14 @@ export default function Home() {
     <main className="relative h-screen w-screen overflow-y-auto overflow-x-hidden bg-white dark:bg-zinc-950">
 
       {/* Theme toggle */}
-      <div className={`transition-opacity duration-1000 ${isExpanding ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className={`transition-opacity duration-500 ${isExpanding ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <ThemeToggle />
       </div>
 
       {/* Hero: terminal intro + 3D dodecahedron */}
       <section className="relative h-screen w-full overflow-hidden">
         {/* Left-side terminal text */}
-        <div className={`pointer-events-none absolute inset-y-0 left-0 z-[200] flex w-full max-w-xl lg:w-[40%] lg:max-w-none flex-col justify-center px-6 sm:px-10 lg:px-12 transition-opacity duration-1000 ease-in-out ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
+        <div className={`pointer-events-none absolute inset-y-0 left-0 z-[200] flex w-full max-w-xl lg:w-[40%] lg:max-w-none flex-col justify-center px-6 sm:px-10 lg:px-12 transition-opacity duration-500 ease-in-out ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
           <TerminalText isReturning={isReturning} onContact={() => setContactOpen(true)} />
         </div>
 

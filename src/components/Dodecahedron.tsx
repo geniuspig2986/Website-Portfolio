@@ -176,7 +176,7 @@ function FaceCard({
     onClick?: (e: React.MouseEvent) => void;
     isReturning?: boolean;
 }) {
-    const delay = isReturning ? index * 0.05 : index * 0.15;
+    const delay = isReturning ? index * 0.05 : index * 0.08;
     const duration = isReturning ? "0.2s" : "0.6s";
 
     // Points corresponding exactly to PENTAGON_CLIP
@@ -524,7 +524,7 @@ function ProjectDetailsWindow({ face, isExpanding, isDark, isReturning }: { face
 
     return (
         <div
-            className={`flex flex-col gap-5 z-50 pointer-events-none transition-all duration-[2000ms] ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${
+            className={`flex flex-col gap-5 z-50 pointer-events-none transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${
                 isExpanding ? "w-[100vw] h-[100vh] mr-0 mb-0 justify-center items-center p-[5vw]" : "w-[400px] mr-[5vw] mb-12 p-6"
             }`}
             style={{
@@ -726,8 +726,8 @@ function FacePanel({ face, onHoverFace, onClickFace, isDark, isReturning }: { fa
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function Dodecahedron({ isReturning = false }: { isReturning?: boolean }) {
-    const PENT_REVEAL_END = isReturning ? 1 : 2;
-    const EDGE_DRAW_END = isReturning ? 2.5 : 5;
+    const PENT_REVEAL_END = isReturning ? 0.4 : 0.8;
+    const EDGE_DRAW_END = isReturning ? 1.0 : 1.8;
     const PANEL_DELAY_MS = EDGE_DRAW_END * 1000;
 
     const router = useRouter();
@@ -757,7 +757,7 @@ export default function Dodecahedron({ isReturning = false }: { isReturning?: bo
         }
         setTimeout(() => {
             router.push(`/projects/${face.slug}`);
-        }, 1950);
+        }, 780);
     };
 
     // Pre-rotated dodecahedron with one face at -Y
