@@ -5,6 +5,9 @@ import { OrbitControls } from "@react-three/drei";
 import Dodecahedron from "@/components/Dodecahedron";
 import ThemeToggle from "@/components/ThemeToggle";
 import ContactModal from "@/components/ContactModal";
+import ProjectGrid from "@/components/home/ProjectGrid";
+import { AwardsStrip, ExperienceEducation, HomeFooter, SkillsSection } from "@/components/home/HomeSections";
+import { LINKS } from "@/data/profile";
 import { useTheme } from "@/components/ThemeProvider";
 import { useState, useEffect, useRef } from "react";
 
@@ -16,6 +19,7 @@ const TERMINAL_LINES = [
   { text: "> portfolio", style: "text-cyan-600 text-xs tracking-widest uppercase" },
   { text: "", style: "h-2" }, // spacer
   { text: "Shenghua (Simon) Jin", style: "text-3xl font-bold text-zinc-900 dark:text-zinc-100" },
+  { text: "CS @ SFU · Software & Robotics", style: "text-xs font-bold tracking-widest uppercase text-cyan-600 dark:text-cyan-500" },
   { text: "", style: "h-3" }, // spacer
   { text: "Mechatronics engineer and software", style: "text-sm text-zinc-600 dark:text-zinc-400" },
   { text: "developer with a passion for robotics,", style: "text-sm text-zinc-600 dark:text-zinc-400" },
@@ -43,8 +47,8 @@ function buildCharMap() {
 const CHAR_MAP = buildCharMap();
 
 function TerminalText({ isReturning, onContact }: { isReturning: boolean; onContact: () => void }) {
-  const charSpeed = isReturning ? 3 : 20;
-  const firstLineDelay = isReturning ? 100 : 2000;
+  const charSpeed = isReturning ? 3 : 8;
+  const firstLineDelay = isReturning ? 100 : 200;
   
   const [revealedCount, setRevealedCount] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -98,23 +102,36 @@ function TerminalText({ isReturning, onContact }: { isReturning: boolean; onCont
         );
       })}
 
-      {allDone && (
-        <div className="mt-4 animate-line flex gap-3 pointer-events-auto" style={{ animationDelay: "0s" }}>
-          <a
-            href="/resume"
-            className="rounded border border-zinc-300 dark:border-zinc-600 px-4 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
-          >
-            view_resume
-          </a>
-          <button
-            type="button"
-            onClick={onContact}
-            className="rounded bg-cyan-600 px-4 py-1.5 text-xs text-white transition hover:bg-cyan-500"
-          >
-            contact
-          </button>
-        </div>
-      )}
+      {/* CTAs and profile links render immediately — not gated on the typewriter */}
+      <div className="mt-4 animate-line flex gap-3 pointer-events-auto" style={{ animationDelay: "0.15s" }}>
+        <a
+          href="/resume"
+          className="rounded border border-zinc-300 dark:border-zinc-600 px-4 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
+        >
+          view_resume
+        </a>
+        <button
+          type="button"
+          onClick={onContact}
+          className="rounded bg-cyan-600 px-4 py-1.5 text-xs text-white transition hover:bg-cyan-500"
+        >
+          contact
+        </button>
+      </div>
+      <div className="mt-3 animate-line flex items-center gap-4 pointer-events-auto" style={{ animationDelay: "0.3s" }}>
+        <a href={LINKS.github} target="_blank" rel="noreferrer" aria-label="GitHub">
+          <img src="/images/footer/github.svg" alt="" className="w-5 h-5 dark:invert opacity-70 hover:opacity-100 transition-opacity" />
+        </a>
+        <a href={LINKS.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">
+          <img src="/images/footer/linkedin.svg" alt="" className="w-5 h-5 dark:invert opacity-70 hover:opacity-100 transition-opacity" />
+        </a>
+        <a
+          href={`mailto:${LINKS.email}`}
+          className="text-xs text-zinc-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+        >
+          {LINKS.email}
+        </a>
+      </div>
     </div>
   );
 }
@@ -126,6 +143,17 @@ export default function Home() {
   const [isExpanding, setIsExpanding] = useState(false);
   const [isReturning, setIsReturning] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    // OrbitControls sets touch-action: none on the canvas, which would trap
+    // page scrolling on touch devices — only mount it for mouse-like pointers.
+    const mq = window.matchMedia("(pointer: fine)");
+    setFinePointer(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setFinePointer(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     // Check if user has visited before in this session
@@ -147,37 +175,57 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative h-screen w-screen overflow-hidden bg-white dark:bg-zinc-950">
+    <main className="relative h-screen w-screen overflow-y-auto overflow-x-hidden bg-white dark:bg-zinc-950">
 
       {/* Theme toggle */}
       <div className={`transition-opacity duration-1000 ${isExpanding ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <ThemeToggle />
       </div>
 
-      {/* Left-side terminal text */}
-      <div className={`pointer-events-none absolute inset-y-0 left-0 z-[200] flex w-[40%] flex-col justify-center px-12 transition-opacity duration-1000 ease-in-out ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
-        <TerminalText isReturning={isReturning} onContact={() => setContactOpen(true)} />
-      </div>
+      {/* Hero: terminal intro + 3D dodecahedron */}
+      <section className="relative h-screen w-full overflow-hidden">
+        {/* Left-side terminal text */}
+        <div className={`pointer-events-none absolute inset-y-0 left-0 z-[200] flex w-full max-w-xl lg:w-[40%] lg:max-w-none flex-col justify-center px-6 sm:px-10 lg:px-12 transition-opacity duration-1000 ease-in-out ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
+          <TerminalText isReturning={isReturning} onContact={() => setContactOpen(true)} />
+        </div>
 
-      {/* 3D Canvas */}
-      <div className="absolute inset-0 z-0 pointer-events-auto">
-        <Canvas
-          camera={{ position: [0, 0, 8], fov: 50 }}
-          style={{ background: canvasBg, pointerEvents: "auto" }}
-          gl={{ localClippingEnabled: true }}
-        >
-          <ambientLight intensity={0.8} />
-          <pointLight position={[10, 10, 10]} intensity={0.6} />
-          <Dodecahedron isReturning={isReturning} />
-          <OrbitControls
-            enableZoom={false}
-            enablePan={false}
-            enableDamping
-            dampingFactor={0.08}
-            target={[0, 0, 0]}
-          />
-        </Canvas>
-      </div>
+        {/* 3D Canvas */}
+        <div className="absolute inset-0 z-0 pointer-events-auto">
+          <Canvas
+            camera={{ position: [0, 0, 8], fov: 50 }}
+            style={{ background: canvasBg, pointerEvents: "auto" }}
+            gl={{ localClippingEnabled: true }}
+          >
+            <ambientLight intensity={0.8} />
+            <pointLight position={[10, 10, 10]} intensity={0.6} />
+            <Dodecahedron isReturning={isReturning} />
+            {finePointer && (
+              <OrbitControls
+                enableZoom={false}
+                enablePan={false}
+                enableDamping
+                dampingFactor={0.08}
+                target={[0, 0, 0]}
+              />
+            )}
+          </Canvas>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className={`pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 z-[100] transition-opacity duration-500 ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
+          <div className="flex flex-col items-center gap-0.5 animate-bounce">
+            <span className="font-mono text-[10px] tracking-widest uppercase text-zinc-400 dark:text-zinc-500">scroll</span>
+            <span className="text-sm leading-none text-zinc-400 dark:text-zinc-500">▾</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Recruiter sections */}
+      <ProjectGrid />
+      <ExperienceEducation />
+      <SkillsSection />
+      <AwardsStrip />
+      <HomeFooter onContact={() => setContactOpen(true)} />
 
       {/* Contact compose window */}
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
