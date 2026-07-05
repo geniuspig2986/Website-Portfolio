@@ -16,8 +16,26 @@ const geistMono = Geist_Mono({
 import PageTransition from "@/components/PageTransition";
 
 export const metadata: Metadata = {
-  title: "Simon Shenghua Jin — Portfolio",
-  description: "Interactive 3D portfolio showcasing robotics, ML, and software engineering projects.",
+  metadataBase: new URL("https://www.simonjin.ca"),
+  title: {
+    default: "Simon (Shenghua) Jin — Robotics @ CMU · Software & Robotics",
+    template: "%s · Simon Jin",
+  },
+  description:
+    "Robotics student at Carnegie Mellon's School of Computer Science (incoming transfer from SFU Computing Science) building computer vision, ROS 2, embedded systems, and full-stack software. Seeking software engineering and robotics internships.",
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Simon Jin — Portfolio",
+    title: "Simon (Shenghua) Jin — Robotics @ CMU · Software & Robotics",
+    description:
+      "Robotics student at Carnegie Mellon's School of Computer Science (incoming transfer from SFU) building computer vision, ROS 2, embedded systems, and full-stack software.",
+    images: ["/images/portrait/portrait.jpg"],
+  },
+  twitter: {
+    card: "summary",
+    images: ["/images/portrait/portrait.jpg"],
+  },
 };
 
 export default function RootLayout({
