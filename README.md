@@ -1,12 +1,12 @@
 # Simon (Shenghua) Jin — 3D Interactive Portfolio
 
-Hi, I'm Simon! Welcome to the source code for my interactive 3D web portfolio. I'm a mechatronics engineer and software developer, and I built this site to showcase my projects spanning robotics, machine learning, and low-level software engineering through a dynamic, interactive dodecahedron interface.
+Hi, I'm Simon! Welcome to the source code for my interactive 3D web portfolio. I'm a robotics student (incoming transfer at Carnegie Mellon's School of Computer Science) and software developer, and I built this site to showcase my projects spanning robotics, machine learning, and low-level software engineering through a dynamic, interactive dodecahedron interface — with a plain scrollable project grid and resume sections below it for quick scanning.
 
 **Live Project:** [simonjin.ca](https://www.simonjin.ca)
 
 ## 🚀 Tech Stack
 
-- **Framework:** Next.js 15 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **3D Engine:** React Three Fiber (R3F), `@react-three/drei`, Three.js
 - **Styling:** Tailwind CSS v4 (CSS-variable based)
 - **Language:** TypeScript
@@ -20,17 +20,18 @@ src/
 │   ├── globals.css       # Tailwind v4 configuration and global CSS variables
 │   ├── layout.tsx        # Root HTML layout, font setup, and ThemeProvider
 │   ├── page.tsx          # Main entry route: 3D Canvas and Terminal UI
-│   ├── resume/           # Resume viewer and PDF embedded subpage
-│   └── projects/         # Individual project detail pages (Markdown/Prose)
-│       ├── air-mouse/
+│   ├── resume/           # Redirects to /resume.pdf
+│   └── projects/         # Individual project detail pages
+│       ├── air-mouse/    #   each with page.tsx + layout.tsx (per-page metadata)
+│       ├── ascension/
 │       ├── hardhaq/
-│       ├── hudson/
-│       └── ... 
+│       └── ...
 ├── components/           # Reusable React components
 │   ├── Dodecahedron.tsx  # Core 3D visualization and interaction logic
+│   ├── home/             # Scrollable home sections (project grid, experience, footer)
 │   ├── ThemeProvider.tsx # Dark/Light mode context manager
 │   └── ThemeToggle.tsx   # Floating theme toggle button
-└── lib/                  # Utility functions (if any)
+└── data/                 # Typed content: projects.ts (grid/face metadata), profile.ts (resume facts)
 ```
 
 ## 🧩 Key Components

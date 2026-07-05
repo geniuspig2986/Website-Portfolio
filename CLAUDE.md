@@ -30,18 +30,23 @@ This is an interactive 3D portfolio. **Stack:** Next.js 16 (App Router) · React
 ```
 src/
   app/
-    layout.tsx              Root layout: fonts, ThemeProvider, PageTransition, theme bootstrap script
-    page.tsx                Home — the 3D Dodecahedron hub + terminal intro
-    globals.css             Tailwind v4 import + all global keyframes
+    layout.tsx              Root layout: fonts, ThemeProvider, PageTransition, theme bootstrap script, site metadata/OG
+    page.tsx                Home — 3D Dodecahedron hero + scrollable recruiter sections (grid, experience, skills, footer)
+    globals.css             Tailwind v4 import + all global keyframes (incl. prefers-reduced-motion overrides)
     resume/page.tsx         Redirects to /resume.pdf
-    projects/<slug>/page.tsx One page per project (portrait, hardhaq, macropad, …)
+    projects/<slug>/page.tsx One page per project (portrait, hardhaq, macropad, ascension, …)
+    projects/<slug>/layout.tsx Tiny server layout exporting per-page metadata (title/description from src/data/projects.ts)
   components/
     Dodecahedron.tsx        3D nav hub; FACE_DEFINITIONS maps faces → project slugs
     PageTransition.tsx      Global route enter/exit animation
-    ProjectLayout.tsx       Shared subpage scaffold + Section / TechTags / SpecRows
+    ProjectLayout.tsx       Shared subpage scaffold + Section / TechTags / SpecRows (+ optional `links` repo buttons)
     TerminalCard.tsx        Terminal-window card with hover-tilt + idle wobble
     SkillNetwork.tsx        R3F skills graph (portrait page)
+    home/                   Home scroll sections: ProjectGrid + HomeSections (experience, skills, awards, footer)
     Dodecahedron / ThemeProvider / ThemeToggle
+  data/
+    projects.ts             Typed project metadata — source of truth for the home grid and face popup blurbs
+    profile.ts              Resume facts (links, experience, education, skills, awards) for home + about page
 public/
   images/<slug>/            Per-project assets
   resume.pdf
@@ -50,7 +55,7 @@ AGENTS.md                   Design schema & 3D/UI specs (read alongside this fil
 
 **Dev commands** (Node/npm required on PATH): `npm run dev` (local server), `npm run build` (typecheck + production build), `npm run start`, `npm run lint`.
 
-When adding a project: create `src/app/projects/<slug>/page.tsx` **and** make sure the matching entry in `FACE_DEFINITIONS` (Dodecahedron.tsx) points to the same `slug`. A face that links to a slug with no page is a 404; a frosted (`isFrosted`) face is intentionally non-navigable ("coming soon").
+When adding a project: create `src/app/projects/<slug>/page.tsx` (plus its metadata `layout.tsx`), add a `PROJECTS` entry in `src/data/projects.ts` (feeds the home grid and popup blurbs), **and** — if it gets a 3D face — make sure the matching entry in `FACE_DEFINITIONS` (Dodecahedron.tsx) points to the same `slug`. A face that links to a slug with no page is a 404; a frosted (`isFrosted`) face is intentionally non-navigable ("coming soon"). A project may be grid-only (e.g. `quant`) — all 12 faces are currently occupied.
 
 ## How to Work on a Feature
 
@@ -129,7 +134,7 @@ When asked to do maintenance work, treat each as its own focused session:
 - **Refactors:** identify duplication and unclear naming. Propose changes; don't bundle with features. The shared scaffolding (`ProjectLayout`, `TerminalCard`, helpers) is the place to consolidate repeated page markup.
 - **Package updates:** one npm dependency at a time, especially `next`, `react`, `three`, `@react-three/*`, and `framer-motion` (their versions are coupled). Read the changelog/breaking changes, then run `npm run build` after each.
 - **Documentation:** keep `README.md`, `AGENTS.md`, and this `CLAUDE.md` in sync with code changes. If new conventions emerge, record them here.
-- **Content sync:** when adding or renaming a project, keep three things aligned — the `FACE_DEFINITIONS` entry (`Dodecahedron.tsx`), the `src/app/projects/<slug>/page.tsx` route, and the `public/images/<slug>/` assets.
+- **Content sync:** when adding or renaming a project, keep four things aligned — the `PROJECTS` entry (`src/data/projects.ts`), the `FACE_DEFINITIONS` entry (`Dodecahedron.tsx`, if it has a face), the `src/app/projects/<slug>/page.tsx` route (+ metadata `layout.tsx`), and the `public/images/<slug>/` assets. Resume-derived facts (experience, education, skills, awards) live in `src/data/profile.ts` — update it alongside `public/resume.pdf`.
 
 ## Handoff Notes
 
