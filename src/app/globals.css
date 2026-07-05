@@ -127,3 +127,19 @@ body {
 .animate-fade-in-slow {
   animation: slowFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+/* Reduced motion: kill decorative loops; entrance animations start at
+   opacity 0 so they must still complete — near-instantly. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-wobble-1,
+  .animate-wobble-2,
+  .animate-shimmer,
+  .animate-blink {
+    animation: none;
+  }
+
+  .animate-line,
+  .animate-fade-in-slow {
+    animation-duration: 0.01s;
+  }
+}

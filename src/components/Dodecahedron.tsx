@@ -262,8 +262,8 @@ const FACE_DEFINITIONS: FaceData[] = [
             <FaceCard accent="rgba(6,182,212,0.6)" slug="portrait" index={0} isDark={isDark} isReturning={isReturning} {...handlers}>
                 <div className="relative w-16 h-16 group mb-1">
                     <img src="/images/portrait/SJ.png" alt="Portrait" className="absolute inset-0 w-full h-full object-contain" />
-                    <img src="/images/portrait/SJ.png" alt="Portrait" className="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-70 group-hover:translate-x-[2px] group-hover:-translate-y-[1px] transition-all duration-100 mix-blend-screen" style={{ filter: 'hue-rotate(90deg) saturate(200%) blur(0.5px)' }} />
-                    <img src="/images/portrait/SJ.png" alt="Portrait" className="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-70 group-hover:-translate-x-[2px] group-hover:translate-y-[1px] transition-all duration-100 mix-blend-screen" style={{ filter: 'hue-rotate(-90deg) saturate(200%) blur(0.5px)' }} />
+                    <img src="/images/portrait/SJ.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-70 group-hover:translate-x-[2px] group-hover:-translate-y-[1px] transition-all duration-100 mix-blend-screen" style={{ filter: 'hue-rotate(90deg) saturate(200%) blur(0.5px)' }} />
+                    <img src="/images/portrait/SJ.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-70 group-hover:-translate-x-[2px] group-hover:translate-y-[1px] transition-all duration-100 mix-blend-screen" style={{ filter: 'hue-rotate(-90deg) saturate(200%) blur(0.5px)' }} />
                 </div>
                 <h2 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Simon Jin</h2>
                 <p className="text-[9px] tracking-widest text-cyan-500 uppercase">
@@ -314,7 +314,7 @@ const FACE_DEFINITIONS: FaceData[] = [
         description: "Engineered a custom hall-effect macropad from scratch, featuring a custom KiCad PCB and embedded firmware.",
         renderContent: (handlers, isDark, isReturning) => (
             <FaceCard accent="rgba(16,185,129,0.5)" slug="macropad" index={3} isDark={isDark} isReturning={isReturning} {...handlers}>
-                <img src="/images/macropad/macropad.png" style={{ width: '100%', height: '75px', objectFit: 'contain' }} />
+                <img src="/images/macropad/macropad.png" alt="Custom macropad" style={{ width: '100%', height: '75px', objectFit: 'contain' }} />
                 <span className="text-[8px] font-bold tracking-widest text-emerald-600 uppercase">Hardware</span>
                 <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Custom Macropad</h3>
                 <p className="text-[9px] text-zinc-500 dark:text-zinc-400">Hall-effect · KiCad PCB</p>

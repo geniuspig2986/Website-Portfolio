@@ -54,6 +54,10 @@ function TerminalText({ isReturning, onContact }: { isReturning: boolean; onCont
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setRevealedCount(CHAR_MAP.length);
+      return;
+    }
     const startTimer = setTimeout(() => {
       intervalRef.current = setInterval(() => {
         setRevealedCount((prev) => {
