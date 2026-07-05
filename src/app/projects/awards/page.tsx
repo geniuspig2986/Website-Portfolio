@@ -48,11 +48,11 @@ const AWARDS = [
         medal: "🏆",
     },
     {
-        name: "nwHacks",
+        name: "nwHacks 2026 — Best Use of ElevenLabs API",
         org: "Western Canada's largest hackathon",
         kind: "Hackathon",
-        note: "Built HUDson — a heads-up display companion with voice synthesis.",
-        medal: "⚡",
+        note: "Won for HUDson — a deaf-assist HUD on XR glasses with real-time captioning and voice cloning.",
+        medal: "🏆",
     },
     {
         name: "JourneyHacks",

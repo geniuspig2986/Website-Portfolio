@@ -38,12 +38,16 @@ export function ExperienceEducation() {
                         );
                     })}
                 </div>
-                <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md h-fit">
-                    <p className="font-mono text-[11px] tracking-widest uppercase text-zinc-500 mb-3">Education</p>
-                    <h3 className="font-bold text-zinc-900 dark:text-zinc-100">{EDUCATION.school}</h3>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{EDUCATION.degree}</p>
-                    <p className="font-mono text-xs text-zinc-500 mt-1">{EDUCATION.period}</p>
-                    <p className="font-mono text-xs text-cyan-600 dark:text-cyan-500 mt-3">{EDUCATION.detail}</p>
+                <div className="flex flex-col gap-5 h-fit">
+                    {EDUCATION.map((ed) => (
+                        <div key={ed.school} className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md">
+                            <p className="font-mono text-[11px] tracking-widest uppercase text-zinc-500 mb-3">Education</p>
+                            <h3 className="font-bold text-zinc-900 dark:text-zinc-100">{ed.school}</h3>
+                            <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{ed.degree}</p>
+                            <p className="font-mono text-xs text-zinc-500 mt-1">{ed.period}</p>
+                            <p className="font-mono text-xs text-cyan-600 dark:text-cyan-500 mt-3">{ed.detail}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

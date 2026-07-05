@@ -34,7 +34,7 @@ export const PROJECTS: ProjectMeta[] = [
     {
         slug: "ascension",
         title: "Ascension Robotics",
-        blurb: "Computer vision engineer on a combat-robotics student design team — real-time armor-panel detection, a 12,000+ image dataset, and ROS 2 motion planning.",
+        blurb: "Computer vision developer on a combat-robotics student design team — real-time armor-panel detection in C++ on a Jetson Orin Nano, a 12,000+ image dataset, and ROS 2 motion planning.",
         tags: ["OpenCV", "ROS 2", "Nav2", "YOLO"],
         accent: "#f97316",
         category: "robotics",
@@ -76,9 +76,10 @@ export const PROJECTS: ProjectMeta[] = [
     {
         slug: "hudson",
         title: "HUDson",
-        blurb: "Software project built at nwHacks. Integrated ElevenLabs API for advanced text-to-speech functionality in a head-up display system.",
-        tags: ["JavaScript", "ElevenLabs API", "WebSockets"],
+        blurb: "Deaf-assist heads-up display on Viture Pro XR glasses — real-time captioning with ElevenLabs text-to-speech and voice cloning. Won Best Use of ElevenLabs API at nwHacks 2026.",
+        tags: ["XR", "ElevenLabs API", "JavaScript", "Node.js"],
         accent: "#3b82f6",
+        award: "Best Use of ElevenLabs API",
         category: "software",
     },
     {

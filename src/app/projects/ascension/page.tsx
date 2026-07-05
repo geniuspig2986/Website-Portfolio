@@ -8,7 +8,7 @@ const ACCENT = "#f97316";
 const HIGHLIGHTS = [
     {
         title: "Armor-panel detection",
-        body: "Real-time detection system running on Linux that automates aiming by tracking and predicting enemy robot motion — an OpenCV pipeline extracts precise target coordinates and angular orientation for the turret.",
+        body: "Real-time C++ detection system on a Jetson Orin Nano that automates aiming by tracking and predicting enemy robot motion — an OpenCV pipeline extracts precise target coordinates and angular orientation, with camera calibration tightened to cut RMS reprojection error by ~80%.",
     },
     {
         title: "Dataset at scale",
@@ -29,7 +29,7 @@ export default function AscensionPage() {
         <ProjectLayout
             slug="ascension"
             title="Ascension Robotics"
-            tagline="Computer vision engineer on a combat-robotics student design team — building the perception and autonomy stack that finds, tracks, and targets opposing robots in real time."
+            tagline="Computer vision developer on a combat-robotics student design team — building the perception and autonomy stack that finds, tracks, and targets opposing robots in real time."
             accent={ACCENT}
         >
             <Section delay={0.2} className="flex flex-col lg:flex-row gap-8 items-stretch">
@@ -60,9 +60,9 @@ export default function AscensionPage() {
                         <div className="p-6 md:p-8 bg-zinc-100/10 dark:bg-zinc-900/40 min-h-[280px] flex flex-col gap-6">
                             <SpecRows
                                 rows={[
-                                    { label: "Role", value: "Computer Vision Engineer" },
+                                    { label: "Role", value: "Computer Vision Developer" },
                                     { label: "Since", value: "Sept 2025" },
-                                    { label: "Platform", value: "Linux · ROS 2" },
+                                    { label: "Platform", value: "Jetson Orin Nano · ROS 2" },
                                     { label: "Team", value: "Student design team" },
                                     { label: "Dataset", value: "12,000+ images · 4× classes" },
                                 ]}

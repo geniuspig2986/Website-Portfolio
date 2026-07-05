@@ -19,17 +19,17 @@ const TERMINAL_LINES = [
   { text: "> portfolio", style: "text-cyan-600 text-xs tracking-widest uppercase" },
   { text: "", style: "h-2" }, // spacer
   { text: "Shenghua (Simon) Jin", style: "text-3xl font-bold text-zinc-900 dark:text-zinc-100" },
-  { text: "CS @ SFU · Software & Robotics", style: "text-xs font-bold tracking-widest uppercase text-cyan-600 dark:text-cyan-500" },
+  { text: "Robotics @ CMU · Incoming Fall 2026", style: "text-xs font-bold tracking-widest uppercase text-cyan-600 dark:text-cyan-500" },
   { text: "", style: "h-3" }, // spacer
   { text: "Mechatronics engineer and software", style: "text-sm text-zinc-600 dark:text-zinc-400" },
   { text: "developer with a passion for robotics,", style: "text-sm text-zinc-600 dark:text-zinc-400" },
   { text: "machine learning, and building things", style: "text-sm text-zinc-600 dark:text-zinc-400" },
   { text: "that bridge the digital-physical divide.", style: "text-sm text-zinc-600 dark:text-zinc-400" },
   { text: "", style: "h-2" }, // spacer
-  { text: "Currently studying at SFU, winning", style: "text-sm text-zinc-600 dark:text-zinc-400" },
-  { text: "hackathons, and pushing the boundaries", style: "text-sm text-zinc-600 dark:text-zinc-400" },
-  { text: "of what hardware and software can do", style: "text-sm text-zinc-600 dark:text-zinc-400" },
-  { text: "together.", style: "text-sm text-zinc-600 dark:text-zinc-400" },
+  { text: "Incoming Robotics transfer at Carnegie", style: "text-sm text-zinc-600 dark:text-zinc-400" },
+  { text: "Mellon (SCS), winning hackathons, and", style: "text-sm text-zinc-600 dark:text-zinc-400" },
+  { text: "pushing the boundaries of what hardware", style: "text-sm text-zinc-600 dark:text-zinc-400" },
+  { text: "and software can do together.", style: "text-sm text-zinc-600 dark:text-zinc-400" },
 ];
 
 // Flatten all characters with line/char indices for sequential reveal

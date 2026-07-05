@@ -360,13 +360,13 @@ const FACE_DEFINITIONS: FaceData[] = [
         slug: "hudson",
         accent: "rgba(59,130,246,0.5)",
         image: "/images/hudson/gallery.jpg",
-        description: "Software project built at nwHacks. Integrated ElevenLabs API for advanced text-to-speech functionality in a head-up display system.",
+        description: projectBySlug("hudson").blurb,
         renderContent: (handlers, isDark, isReturning) => (
             <FaceCard accent="rgba(59,130,246,0.5)" slug="hudson" index={6} isDark={isDark} isReturning={isReturning} {...handlers}>
                 <img src="/images/hudson/logo.jpg" alt="HUDson" className="w-15 h-15" />
-                <span className="text-[8px] font-bold tracking-widest text-blue-600 uppercase">Software</span>
+                <span className="text-[8px] font-bold tracking-widest text-blue-600 uppercase">🏆 nwHacks 2026</span>
                 <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">HUDson</h3>
-                <p className="text-[9px] text-zinc-500 dark:text-zinc-400">nwHacks · ElevenLabs API</p>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400">Deaf-assist HUD · ElevenLabs</p>
             </FaceCard>
         ),
     },
