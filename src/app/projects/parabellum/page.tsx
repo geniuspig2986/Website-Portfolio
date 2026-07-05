@@ -31,6 +31,7 @@ export default function ParabellumPage() {
             title="FTC Parabellum"
             tagline="Three years as captain of FIRST Tech Challenge team Parabellum — leading design, build, and strategy all the way to the European Internationals."
             accent={ACCENT}
+            links={[{ label: "view_source", href: "https://github.com/sinj3d/FtcRobotController25" }]}
         >
             <Section delay={0.2} className="flex flex-col lg:flex-row gap-8 items-stretch">
                 {/* Hero image */}

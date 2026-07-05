@@ -31,6 +31,7 @@ export default function ResumeBuilderPage() {
             title="Resume Builder"
             tagline="A local-first AI resume builder that turns structured experience data into tailored, print-ready LaTeX resumes — powered by an on-device LLM."
             accent={ACCENT}
+            links={[{ label: "view_source", href: "https://github.com/sinj3d/resume-builder" }]}
         >
             <Section delay={0.2} className="flex flex-col lg:flex-row gap-8 items-stretch">
                 {/* Pipeline diagram */}

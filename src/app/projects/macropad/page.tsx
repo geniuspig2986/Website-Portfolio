@@ -31,6 +31,7 @@ export default function MacropadPage() {
             title="Custom Macropad"
             tagline="A hall-effect macropad engineered from the silicon up — custom KiCad PCB, analog magnetic switches, and embedded firmware that speaks USB HID."
             accent={ACCENT}
+            links={[{ label: "view_source", href: "https://github.com/sinj3d/hall-effect-macropad" }]}
         >
             <Section delay={0.2} className="flex flex-col lg:flex-row gap-8 items-stretch">
                 {/* Hero image */}

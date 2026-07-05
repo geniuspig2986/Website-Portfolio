@@ -31,6 +31,7 @@ export default function HudsonPage() {
             title="HUDson"
             tagline="A heads-up display companion that keeps your eyes on the road and talks back — built at nwHacks with the ElevenLabs API for natural text-to-speech."
             accent={ACCENT}
+            links={[{ label: "view_source", href: "https://github.com/iancdev/hudglasses" }]}
         >
             <Section delay={0.2} className="flex flex-col lg:flex-row gap-8 items-stretch">
                 {/* Hero image */}

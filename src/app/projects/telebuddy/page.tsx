@@ -31,6 +31,7 @@ export default function TelebuddyPage() {
             title="Telebuddy"
             tagline="A 6-DOF teleoperated robotic arm for precision soldering, driven through an AR control layer. Winner of Science Tech for Social Good at Hack the Coast."
             accent={ACCENT}
+            links={[{ label: "view_source", href: "https://github.com/PotatoPeaSea/6dof" }]}
         >
             <Section delay={0.2} className="flex flex-col lg:flex-row gap-8 items-stretch">
                 {/* Hero image */}

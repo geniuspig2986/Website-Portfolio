@@ -12,12 +12,14 @@ export default function ProjectLayout({
     title,
     tagline,
     accent = "#06b6d4",
+    links,
     children,
 }: {
     slug: string;
     title: string;
     tagline: string;
     accent?: string;
+    links?: { label: string; href: string }[];
     children: ReactNode;
 }) {
     return (
@@ -65,6 +67,26 @@ export default function ProjectLayout({
                         <span className="font-bold" style={{ color: accent }}>{"> "}</span>
                         {tagline}
                     </p>
+                    {links && links.length > 0 && (
+                        <div className="flex flex-wrap gap-3 mt-1">
+                            {links.map((l) => (
+                                <a
+                                    key={l.href}
+                                    href={l.href}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition border border-zinc-300 dark:border-zinc-700 px-4 py-2 rounded-md group font-mono text-sm shadow-lg"
+                                >
+                                    <img
+                                        src="/images/footer/github.svg"
+                                        alt=""
+                                        className="w-4 h-4 dark:invert opacity-70 group-hover:opacity-100 transition-opacity"
+                                    />
+                                    <span className="text-zinc-800 dark:text-zinc-200">{l.label}</span>
+                                </a>
+                            ))}
+                        </div>
+                    )}
                     <div
                         className="h-px w-full mt-2"
                         style={{ background: `linear-gradient(90deg, ${accent}55, transparent)` }}
