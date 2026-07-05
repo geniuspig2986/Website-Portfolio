@@ -6,16 +6,17 @@ import { OrbitControls } from '@react-three/drei';
 import SkillNetwork from '@/components/SkillNetwork';
 import { useRef, useState, useEffect } from 'react';
 import TerminalCard from '@/components/TerminalCard';
+import { EDUCATION, EXPERIENCE, LINKS, SKILL_GROUPS } from '@/data/profile';
 
 
 const TYPE_SPEED = 10; // ms per char (rapid typing)
 
 function TerminalBioContent() {
-    const fullStatus = "Status: Active // Building resume-builder";
+    const fullStatus = "Status: Active // CV Developer @ Ascension Robotics";
     const fullName = "> Simon_Jin";
     const fullTitle = "Robotics | Machine Learning | Software";
     const fullBio1 = "Mechatronics engineer and software developer with a passion for robotics, machine learning, and building things that bridge the digital-physical divide.";
-    const fullBio2 = "Currently studying at SFU, winning hackathons, and pushing the boundaries of what hardware and software can do together.";
+    const fullBio2 = "Incoming Robotics transfer at Carnegie Mellon (SCS), winning hackathons, and pushing the boundaries of what hardware and software can do together.";
 
     const [counts, setCounts] = useState({
         status: 0,
@@ -98,6 +99,9 @@ function TerminalBioContent() {
                 <a href="https://github.com/sinj3d" target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition border border-zinc-300 dark:border-zinc-700 px-4 py-2 rounded-md group font-mono text-sm shadow-lg">
                     <img src="/images/footer/github.svg" alt="GitHub" className="w-5 h-5 dark:invert opacity-70 group-hover:opacity-100 transition-opacity" />
                     <span className="text-zinc-800 dark:text-zinc-200">GitHub</span>
+                </a>
+                <a href={`mailto:${LINKS.email}`} className="flex items-center gap-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition border border-zinc-300 dark:border-zinc-700 px-4 py-2 rounded-md font-mono text-sm shadow-lg">
+                    <span className="text-zinc-800 dark:text-zinc-200">{LINKS.email}</span>
                 </a>
                 <a href="/resume" className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 transition px-4 py-2 rounded-md shadow-lg shadow-cyan-900/20 font-mono text-sm">
                     <img src="/images/footer/resume.svg" alt="Resume" className="w-5 h-5 invert" />
@@ -203,6 +207,53 @@ export default function PortraitPage() {
                         <TerminalCard className="h-full flex flex-col items-stretch" delay="-4s" reverseWobble={true}>
                             <TerminalBioContent />
                         </TerminalCard>
+                    </div>
+                </div>
+
+                {/* Education / Now / Skills — plain-text facts for quick scanning */}
+                <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 grid grid-cols-1 lg:grid-cols-3 gap-6 mb-24">
+                    <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md">
+                        <p className="font-mono text-[11px] tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-4">// education</p>
+                        <div className="flex flex-col gap-5">
+                            {EDUCATION.map((ed) => (
+                                <div key={ed.school}>
+                                    <h3 className="font-bold text-zinc-900 dark:text-zinc-100">{ed.school}</h3>
+                                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-0.5">{ed.degree}</p>
+                                    <p className="font-mono text-xs text-zinc-500 mt-0.5">{ed.period}</p>
+                                    <p className="font-mono text-xs text-cyan-600 dark:text-cyan-500 mt-1">{ed.detail}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md">
+                        <p className="font-mono text-[11px] tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-4">// now</p>
+                        <div className="flex flex-col gap-4">
+                            {EXPERIENCE.map((e) => (
+                                <div key={e.org}>
+                                    <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+                                        {e.org} <span className="font-normal text-zinc-500 dark:text-zinc-400">— {e.role}</span>
+                                    </h3>
+                                    <p className="font-mono text-[11px] text-zinc-500 mt-0.5">{e.period}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md">
+                        <p className="font-mono text-[11px] tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-4">// skills</p>
+                        <div className="flex flex-col gap-4">
+                            {SKILL_GROUPS.map((g) => (
+                                <div key={g.label}>
+                                    <p className="font-mono text-[11px] tracking-widest uppercase text-zinc-500 mb-2">{g.label}</p>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {g.items.map((s) => (
+                                            <span key={s} className="font-mono text-[11px] px-2 py-0.5 rounded border border-zinc-300 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-700 dark:text-zinc-300">
+                                                {s}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
