@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as THREE from "three";
 import { useTheme } from "./ThemeProvider";
+import { projectBySlug } from "@/data/projects";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const RADIUS = 2.5;
@@ -271,17 +272,18 @@ const FACE_DEFINITIONS: FaceData[] = [
             </FaceCard>
         ),
     },
-    // ── 1: Frosted placeholder (was footer) ──────────────────────────────────
+    // ── 1: Ascension Robotics ────────────────────────────────────────────────
     {
         direction: [0, -1, -phi],
-        label: "",
-        slug: "placeholder-5",
-        accent: "rgba(160,160,180,0.3)",
-        description: "This project is currently under development. Check back soon for updates.",
-        isFrosted: true,
+        label: "Ascension",
+        slug: "ascension",
+        accent: "rgba(249,115,22,0.5)",
+        description: projectBySlug("ascension").blurb,
         renderContent: (handlers, isDark, isReturning) => (
-            <FaceCard accent="rgba(160,160,180,0.3)" slug="placeholder-5" index={1} frosted isDark={isDark} isReturning={isReturning} {...handlers}>
-                <div className="animate-shimmer absolute inset-0 pointer-events-none" />
+            <FaceCard accent="rgba(249,115,22,0.5)" slug="ascension" index={1} isDark={isDark} isReturning={isReturning} {...handlers}>
+                <span className="text-[8px] font-bold tracking-widest text-orange-600 uppercase">Robotics · CV</span>
+                <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Ascension Robotics</h3>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400">Armor detection · ROS 2</p>
             </FaceCard>
         ),
     },
@@ -319,17 +321,18 @@ const FACE_DEFINITIONS: FaceData[] = [
             </FaceCard>
         ),
     },
-    // ── 4: Frosted placeholder (was hackml) ──────────────────────────────────
+    // ── 4: HackML ────────────────────────────────────────────────────────────
     {
         direction: [1, phi, 0],
-        label: "",
-        slug: "placeholder-1",
-        accent: "rgba(160,160,180,0.3)",
-        description: "This project is currently under development. Check back soon for updates.",
-        isFrosted: true,
+        label: "HackML",
+        slug: "hackml",
+        accent: "rgba(139,92,246,0.5)",
+        description: projectBySlug("hackml").blurb,
         renderContent: (handlers, isDark, isReturning) => (
-            <FaceCard accent="rgba(160,160,180,0.3)" slug="placeholder-1" index={4} frosted isDark={isDark} isReturning={isReturning} {...handlers}>
-                <div className="animate-shimmer absolute inset-0 pointer-events-none" />
+            <FaceCard accent="rgba(139,92,246,0.5)" slug="hackml" index={4} isDark={isDark} isReturning={isReturning} {...handlers}>
+                <span className="text-[8px] font-bold tracking-widest text-violet-600 uppercase">Machine Learning</span>
+                <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">HackML</h3>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400">K-fold CV · Optimization</p>
             </FaceCard>
         ),
     },
@@ -384,17 +387,18 @@ const FACE_DEFINITIONS: FaceData[] = [
             </FaceCard>
         ),
     },
-    // ── 8: Frosted placeholder (was airmouse) ────────────────────────────────
+    // ── 8: Air Mouse ─────────────────────────────────────────────────────────
     {
         direction: [phi, 0, 1],
-        label: "",
-        slug: "placeholder-2",
-        accent: "rgba(160,160,180,0.3)",
-        description: "This project is currently under development. Check back soon for updates.",
-        isFrosted: true,
+        label: "Air Mouse",
+        slug: "air-mouse",
+        accent: "rgba(99,102,241,0.5)",
+        description: projectBySlug("air-mouse").blurb,
         renderContent: (handlers, isDark, isReturning) => (
-            <FaceCard accent="rgba(160,160,180,0.3)" slug="placeholder-2" index={8} frosted isDark={isDark} isReturning={isReturning} {...handlers}>
-                <div className="animate-shimmer absolute inset-0 pointer-events-none" />
+            <FaceCard accent="rgba(99,102,241,0.5)" slug="air-mouse" index={8} isDark={isDark} isReturning={isReturning} {...handlers}>
+                <span className="text-[8px] font-bold tracking-widest text-indigo-600 uppercase">Embedded</span>
+                <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Air Mouse</h3>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400">IMU · Sensor fusion</p>
             </FaceCard>
         ),
     },
@@ -413,31 +417,33 @@ const FACE_DEFINITIONS: FaceData[] = [
             </FaceCard>
         ),
     },
-    // ── 10: Frosted placeholder (was roboticslab) ────────────────────────────
+    // ── 10: Systems & Robotics Research ──────────────────────────────────────
     {
         direction: [phi, 0, -1],
-        label: "",
-        slug: "placeholder-3",
-        accent: "rgba(160,160,180,0.3)",
-        description: "This project is currently under development. Check back soon for updates.",
-        isFrosted: true,
+        label: "Research",
+        slug: "research",
+        accent: "rgba(6,182,212,0.5)",
+        description: projectBySlug("research").blurb,
         renderContent: (handlers, isDark, isReturning) => (
-            <FaceCard accent="rgba(160,160,180,0.3)" slug="placeholder-3" index={10} frosted isDark={isDark} isReturning={isReturning} {...handlers}>
-                <div className="animate-shimmer absolute inset-0 pointer-events-none" />
+            <FaceCard accent="rgba(6,182,212,0.5)" slug="research" index={10} isDark={isDark} isReturning={isReturning} {...handlers}>
+                <span className="text-[8px] font-bold tracking-widest text-cyan-600 uppercase">Systems</span>
+                <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Robotics Research</h3>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400">ROS · C++ · Docker</p>
             </FaceCard>
         ),
     },
-    // ── 11: Frosted placeholder (was awards) ─────────────────────────────────
+    // ── 11: Awards & Recognition ─────────────────────────────────────────────
     {
         direction: [-phi, 0, -1],
-        label: "",
-        slug: "placeholder-4",
-        accent: "rgba(160,160,180,0.3)",
-        description: "This project is currently under development. Check back soon for updates.",
-        isFrosted: true,
+        label: "Awards",
+        slug: "awards",
+        accent: "rgba(245,158,11,0.5)",
+        description: projectBySlug("awards").blurb,
         renderContent: (handlers, isDark, isReturning) => (
-            <FaceCard accent="rgba(160,160,180,0.3)" slug="placeholder-4" index={11} frosted isDark={isDark} isReturning={isReturning} {...handlers}>
-                <div className="animate-shimmer absolute inset-0 pointer-events-none" />
+            <FaceCard accent="rgba(245,158,11,0.5)" slug="awards" index={11} isDark={isDark} isReturning={isReturning} {...handlers}>
+                <span className="text-[8px] font-bold tracking-widest text-amber-600 uppercase">🏆 Recognition</span>
+                <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Awards</h3>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400">Hackathons · Scholarships</p>
             </FaceCard>
         ),
     },
