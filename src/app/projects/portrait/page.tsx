@@ -91,11 +91,11 @@ function TerminalBioContent() {
             </p>
 
             <div className={`flex flex-wrap gap-4 mt-auto pt-8 border-t border-zinc-200 dark:border-zinc-800/50 relative z-20 transition-all duration-1000 ease-out transform ${showSocials ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <a href="https://linkedin.com/in/simon-jin" target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition border border-zinc-300 dark:border-zinc-700 px-4 py-2 rounded-md group font-mono text-sm shadow-lg">
+                <a href="https://www.linkedin.com/in/shenghua-jin/" target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition border border-zinc-300 dark:border-zinc-700 px-4 py-2 rounded-md group font-mono text-sm shadow-lg">
                     <img src="/images/footer/linkedin.svg" alt="LinkedIn" className="w-5 h-5 dark:invert opacity-70 group-hover:opacity-100 transition-opacity" />
                     <span className="text-zinc-800 dark:text-zinc-200">LinkedIn</span>
                 </a>
-                <a href="https://github.com/ShenghuaJin" target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition border border-zinc-300 dark:border-zinc-700 px-4 py-2 rounded-md group font-mono text-sm shadow-lg">
+                <a href="https://github.com/sinj3d" target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition border border-zinc-300 dark:border-zinc-700 px-4 py-2 rounded-md group font-mono text-sm shadow-lg">
                     <img src="/images/footer/github.svg" alt="GitHub" className="w-5 h-5 dark:invert opacity-70 group-hover:opacity-100 transition-opacity" />
                     <span className="text-zinc-800 dark:text-zinc-200">GitHub</span>
                 </a>

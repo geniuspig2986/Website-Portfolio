@@ -15,16 +15,16 @@ const SLIDE_DATA = [
         text: "After establishing the feedline, we iteratively determined the optimal resonator and qubit frequencies. The design of the resonator claw was heavily optimized—its geometry directly dictates the capacitive coupling strength (g) between the qubit and the readout resonator, enabling high-fidelity state measurement."
     },
     {
-        title: "Circuit Parameters (Ej/Ec)",
-        text: "Operating in the transmon regime necessitates a large ratio between the Josephson Energy (Ej) and Charging Energy (Ec). By maintaining Ej/Ec >> 1, the circuit exponentially suppresses sensitivity to charge noise. However, it must also retain enough anharmonicity to cleanly isolate the computational states (0 and 1) from higher energy levels to prevent leakage."
+        title: "Circuit Parameters (E_J/E_C)",
+        text: "Operating in the transmon regime necessitates a large ratio between the Josephson Energy (E_J) and Charging Energy (E_C). By maintaining E_J/E_C ≫ 1, the circuit exponentially suppresses sensitivity to charge noise. However, it must also retain enough anharmonicity to cleanly isolate the computational states (0 and 1) from higher energy levels to prevent leakage."
     },
     {
         title: "Engineering Tradeoffs",
-        text: "Superconducting circuit design is defined by tradeoffs. Increasing the coupling strength improves readout speed and accuracy, but it aggressively degrades the qubit coherence lifetime (T1) via the Purcell effect. We navigated these constraints to maximize coherence without sacrificing the speed needed to manipulate and measure the quantum state before decoherence occurs."
+        text: "Superconducting circuit design is defined by tradeoffs. Increasing the coupling strength improves readout speed and accuracy, but it aggressively degrades the qubit coherence lifetime (T₁) via the Purcell effect. We navigated these constraints to maximize coherence without sacrificing the speed needed to manipulate and measure the quantum state before decoherence occurs."
     },
     {
         title: "Substrate Selection",
-        text: "Material choice heavily impacts dielectric loss and two-level system (TLS) noise, which dominate decoherence mechanisms: Silicon is highly scalable and leverages existing CMOS manufacturing infrastructure, but often exhibits slightly higher surface dielectric losses. Sapphire provides a crystalline structure with exceptionally low dielectric loss tangents, favoring longer coherence times (T1), though introducing more complex and expensive fabrication requirements."
+        text: "Material choice heavily impacts dielectric loss and two-level system (TLS) noise, which dominate decoherence mechanisms: Silicon is highly scalable and leverages existing CMOS manufacturing infrastructure, but often exhibits slightly higher surface dielectric losses. Sapphire provides a crystalline structure with exceptionally low dielectric loss tangents, favoring longer coherence times (T₁), though introducing more complex and expensive fabrication requirements."
     }
 ];
 
@@ -48,7 +48,7 @@ function ProjectMetadata() {
                      <span className="text-rose-500">{'>'}</span> HardHaQ 1st Place
                 </h2>
                 <p className="text-zinc-700 dark:text-zinc-400 mb-8 leading-relaxed text-sm md:text-base">
-                    Designed and optimized a superconducting quantum circuit based on a transmon architecture. This process involved advanced microwave engineering to accurately match impedances, define capacitive coupling strengths, and balance critical quantum system tradeoffs like coherence times ($T_1$/$T_2$) against computational readout bandwidth.
+                    Designed and optimized a superconducting quantum circuit based on a transmon architecture. This process involved advanced microwave engineering to accurately match impedances, define capacitive coupling strengths, and balance critical quantum system tradeoffs like coherence times (T₁/T₂) against computational readout bandwidth.
                 </p>
                 
                 <div className="bg-white/50 dark:bg-black/30 p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-inner w-full">

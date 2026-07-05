@@ -60,7 +60,7 @@ export default function ParabellumPage() {
                             <SpecRows
                                 rows={[
                                     { label: "Program", value: "FTC" },
-                                    { label: "Role", value: "Captain · 2 yrs" },
+                                    { label: "Role", value: "Captain · 3 yrs" },
                                     { label: "Peak", value: "Innovate 2nd @ EU Internationals" },
                                     { label: "Focus", value: "Design + build" },
                                     { label: "Team", value: "Parabellum" },

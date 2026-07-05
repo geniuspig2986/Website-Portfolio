@@ -34,6 +34,20 @@ const AWARDS = [
         medal: "🎓",
     },
     {
+        name: "SFU DSSS Datajam — Most Effective Solution",
+        org: "SFU Data Science Student Society",
+        kind: "Datathon",
+        note: "Predicted optimal batting mechanics from a baseball dataset with random forest, logistic regression, and XGBoost.",
+        medal: "🏆",
+    },
+    {
+        name: "SFU Stormhacks — Surge Choice Award",
+        org: "Sustainable Engineering Track",
+        kind: "Hackathon",
+        note: "Built EcoDepot, an automated waste-sorting system pairing a custom CV model with a 3D-modeled sorting assembly.",
+        medal: "🏆",
+    },
+    {
         name: "nwHacks",
         org: "Western Canada's largest hackathon",
         kind: "Hackathon",

@@ -255,7 +255,7 @@ const FACE_DEFINITIONS: FaceData[] = [
         label: "Portrait",
         slug: "portrait",
         accent: "rgba(6,182,212,0.6)",
-        image: "/images/portrait/portrait-old.jpg",
+        image: "/images/portrait/portrait.jpg",
         description: "Simon Jin. Robotics, ML, and Software Engineering. Passionate about building intelligent systems.",
         renderContent: (handlers, isDark, isReturning) => (
             <FaceCard accent="rgba(6,182,212,0.6)" slug="portrait" index={0} isDark={isDark} isReturning={isReturning} {...handlers}>
