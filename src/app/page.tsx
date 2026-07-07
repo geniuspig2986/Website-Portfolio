@@ -179,7 +179,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative h-screen w-screen overflow-y-auto overflow-x-hidden bg-white dark:bg-zinc-950">
+    <main className="relative w-screen overflow-y-auto overflow-x-hidden bg-white dark:bg-zinc-950" style={{ minHeight: '100vh' }}>
 
       {/* Theme toggle */}
       <div className={`transition-opacity duration-500 ${isExpanding ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
@@ -187,7 +187,7 @@ export default function Home() {
       </div>
 
       {/* Hero: terminal intro + 3D dodecahedron */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative w-full overflow-hidden" style={{ height: '100dvh' }}>
         {/* Left-side terminal text */}
         <div className={`pointer-events-none absolute inset-y-0 left-0 z-[200] flex w-full max-w-xl lg:w-[40%] lg:max-w-none flex-col justify-center px-6 sm:px-10 lg:px-12 transition-opacity duration-500 ease-in-out ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
           <TerminalText isReturning={isReturning} onContact={() => setContactOpen(true)} />
@@ -216,10 +216,10 @@ export default function Home() {
         </div>
 
         {/* Scroll indicator */}
-        <div className={`pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 z-[100] transition-opacity duration-500 ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
+        <div className={`pointer-events-none absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-[100] transition-opacity duration-500 ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
           <div className="flex flex-col items-center gap-0.5 animate-bounce">
-            <span className="font-mono text-[10px] tracking-widest uppercase text-zinc-400 dark:text-zinc-500">scroll</span>
-            <span className="text-sm leading-none text-zinc-400 dark:text-zinc-500">▾</span>
+            <span className="font-mono text-[10px] sm:text-[11px] tracking-widest uppercase text-zinc-400 dark:text-zinc-500">scroll</span>
+            <span className="text-base sm:text-lg leading-none text-zinc-400 dark:text-zinc-500">▾</span>
           </div>
         </div>
       </section>
