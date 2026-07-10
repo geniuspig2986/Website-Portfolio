@@ -55,7 +55,7 @@ AGENTS.md                   Design schema & 3D/UI specs (read alongside this fil
 
 **Dev commands** (Node/npm required on PATH): `npm run dev` (local server), `npm run build` (typecheck + production build), `npm run start`, `npm run lint`.
 
-When adding a project: create `src/app/projects/<slug>/page.tsx` (plus its metadata `layout.tsx`), add a `PROJECTS` entry in `src/data/projects.ts` (feeds the home grid and popup blurbs), **and** — if it gets a 3D face — make sure the matching entry in `FACE_DEFINITIONS` (Dodecahedron.tsx) points to the same `slug`. A face that links to a slug with no page is a 404; a frosted (`isFrosted`) face is intentionally non-navigable ("coming soon"). A project may be grid-only (e.g. `quant`) — all 12 faces are currently occupied.
+When adding a project: create `src/app/projects/<slug>/page.tsx` (plus its metadata `layout.tsx`), add a `PROJECTS` entry in `src/data/projects.ts` (feeds the home grid and popup blurbs), **and** — if it gets a 3D face — make sure the matching entry in `FACE_DEFINITIONS` (Dodecahedron.tsx) points to the same `slug`. A face that links to a slug with no page is a 404; a frosted (`isFrosted`) face is intentionally non-navigable ("coming soon"). A project may be grid-only (no face). Currently 11 faces link to project pages and face 10 is a frosted "coming soon" placeholder — reuse it first when adding a new project.
 
 ## How to Work on a Feature
 
