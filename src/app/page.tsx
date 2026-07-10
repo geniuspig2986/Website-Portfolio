@@ -113,7 +113,7 @@ export default function Home() {
           <TerminalText onContact={() => setContactOpen(true)} />
         </div>
 
-        <div className="absolute inset-0 z-0 pointer-events-auto">
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <Canvas
             camera={{ position: [0, 0, 8], fov: 50 }}
             style={{ background: canvasBg, pointerEvents: "auto" }}
