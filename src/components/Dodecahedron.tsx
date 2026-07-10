@@ -725,9 +725,9 @@ function FacePanel({ face, onHoverFace, onClickFace, isDark, isReturning }: { fa
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export default function Dodecahedron({ isReturning = false }: { isReturning?: boolean }) {
-    const FADE_IN_DURATION = isReturning ? 0.4 : 0.8;
-    const PANEL_DELAY_MS = FADE_IN_DURATION * 1000;
+export default function Dodecahedron({ isReturning = false, isFadingIn = false }: { isReturning?: boolean; isFadingIn?: boolean }) {
+    const FADE_IN_DURATION = isFadingIn ? 0.8 : (isReturning ? 0.4 : 0.8);
+    const PANEL_DELAY_MS = isFadingIn ? 800 : (FADE_IN_DURATION * 1000);
 
     const router = useRouter();
     const { theme } = useTheme();
@@ -834,6 +834,22 @@ export default function Dodecahedron({ isReturning = false }: { isReturning?: bo
                 if (child.material) {
                     if (child.material.opacity !== undefined) {
                         child.material.opacity = progress;
+                    }
+                }
+            });
+            clipPlane.constant = -0.5;
+
+        } else if (isFadingIn) {
+            // Simple fade-in mode: stay static after animation
+            groupRef.current.position.y = 0;
+            groupRef.current.quaternion.copy(tiltQuat);
+            if (pentGroupRef.current) pentGroupRef.current.visible = false;
+            if (edgeLinesGroupRef.current) edgeLinesGroupRef.current.visible = false;
+
+            groupRef.current.traverse((child: any) => {
+                if (child.material) {
+                    if (child.material.opacity !== undefined) {
+                        child.material.opacity = 1;
                     }
                 }
             });

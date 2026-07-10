@@ -121,7 +121,7 @@ export default function Home() {
           >
             <ambientLight intensity={0.8} />
             <pointLight position={[10, 10, 10]} intensity={0.6} />
-            <Dodecahedron isReturning={false} />
+            <Dodecahedron isReturning={false} isFadingIn />
             {finePointer && (
               <OrbitControls
                 enableZoom={false}
