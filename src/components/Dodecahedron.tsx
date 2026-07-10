@@ -839,22 +839,6 @@ export default function Dodecahedron({ isReturning = false, isFadingIn = false }
             });
             clipPlane.constant = -0.5;
 
-        } else if (isFadingIn) {
-            // Simple fade-in mode: stay static after animation
-            groupRef.current.position.y = 0;
-            groupRef.current.quaternion.copy(tiltQuat);
-            if (pentGroupRef.current) pentGroupRef.current.visible = false;
-            if (edgeLinesGroupRef.current) edgeLinesGroupRef.current.visible = false;
-
-            groupRef.current.traverse((child: any) => {
-                if (child.material) {
-                    if (child.material.opacity !== undefined) {
-                        child.material.opacity = 1;
-                    }
-                }
-            });
-            clipPlane.constant = -0.5;
-
         } else {
             // Animation complete, begin slow tumble
             groupRef.current.position.y = 0;
