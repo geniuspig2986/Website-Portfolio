@@ -726,9 +726,8 @@ function FacePanel({ face, onHoverFace, onClickFace, isDark, isReturning }: { fa
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function Dodecahedron({ isReturning = false }: { isReturning?: boolean }) {
-    const PENT_REVEAL_END = isReturning ? 0.4 : 0.8;
-    const EDGE_DRAW_END = isReturning ? 1.0 : 1.8;
-    const PANEL_DELAY_MS = EDGE_DRAW_END * 1000;
+    const FADE_IN_DURATION = isReturning ? 0.4 : 0.8;
+    const PANEL_DELAY_MS = FADE_IN_DURATION * 1000;
 
     const router = useRouter();
     const { theme } = useTheme();
@@ -821,90 +820,32 @@ export default function Dodecahedron({ isReturning = false }: { isReturning?: bo
         if (!groupRef.current) return;
         const elapsed = clock.getElapsedTime();
 
-        const pent = pentGroupRef.current;
-
-        if (elapsed < PENT_REVEAL_END) {
-            // Phase 0: Pentagon reveal with UPWARDS clipping plane
+        if (elapsed < FADE_IN_DURATION) {
+            // Simple fade-in from bottom
+            const progress = Math.min(1, elapsed / FADE_IN_DURATION);
+            groupRef.current.position.y = -1 + progress * 1;
             groupRef.current.quaternion.copy(tiltQuat);
 
-            if (pent) {
-                pent.visible = true;
-                pent.scale.setScalar(1);
-                // Already at bottom face position
-                pent.position.copy(bottomCenter);
-            }
+            if (pentGroupRef.current) pentGroupRef.current.visible = false;
             if (edgeLinesGroupRef.current) edgeLinesGroupRef.current.visible = false;
 
-            pentCylindersRef.current.forEach((mesh, i) => {
-                if (mesh) updateCylinder(mesh, pentPoints[i], pentPoints[i + 1]);
-            });
-
-            const progress = elapsed / PENT_REVEAL_END;
-            const ease = progress * progress * (3 - 2 * progress); // smoothstep
-
-            // Limit moves from -3.5 to 0.5 (world Y).
-            // Normal (0, 1, 0), so equation: y > limit is clipped.
-            // constant = -limit
-            const limit = -3.5 + ease * 4; // -3.5 to 0.5
-            clipPlane.constant = -limit;
-
-        } else if (elapsed < EDGE_DRAW_END) {
-            // Phase 1: edges draw bottom-to-top from pentagon corners
-            // Keep base orientation (no tumble yet)
-            groupRef.current.quaternion.copy(tiltQuat);
-
-            const p = (elapsed - PENT_REVEAL_END) / (EDGE_DRAW_END - PENT_REVEAL_END);
-            const ease = 1 - Math.pow(1 - p, 2); // ease-out quad
-
-            // Maintain fully revealed plane
-            clipPlane.constant = -0.5;
-
-            // Pentagon disappears in place at start of edge drawing
-            if (pent) {
-                pent.visible = ease < 0.2;
-                pent.scale.setScalar(1);
-                pent.position.copy(bottomCenter);
-            }
-
-            pentCylindersRef.current.forEach((mesh, i) => {
-                if (mesh) updateCylinder(mesh, pentPoints[i], pentPoints[i + 1]);
-            });
-
-            // Reveal edges bottom-to-top using cylinders
-            if (edgeLinesGroupRef.current) {
-                edgeLinesGroupRef.current.visible = true;
-                const total = sortedEdges.length;
-                const revealCount = Math.ceil(ease * total);
-
-                for (let i = 0; i < total; i++) {
-                    const mesh = edgeCylindersRef.current[i];
-                    if (!mesh) continue;
-                    const seg = sortedEdges[i];
-                    if (i < revealCount) {
-                        const edgeProgress = Math.min(1, (ease * total - i) / 3);
-                        const ep = edgeProgress * edgeProgress;
-                        // Draw from point A to point B linearly
-                        v1.set(seg.ax, seg.ay, seg.az);
-                        v2.set(
-                            seg.ax + (seg.bx - seg.ax) * ep,
-                            seg.ay + (seg.by - seg.ay) * ep,
-                            seg.az + (seg.bz - seg.az) * ep
-                        );
-                        updateCylinder(mesh, v1, v2);
-                    } else {
-                        mesh.visible = false;
+            // Fade all children
+            groupRef.current.traverse((child: any) => {
+                if (child.material) {
+                    if (child.material.opacity !== undefined) {
+                        child.material.opacity = progress;
                     }
                 }
-            }
+            });
+            clipPlane.constant = -0.5;
 
         } else {
-            // Phase 2+: construction complete, begin slow tumble
-            if (pent) pent.visible = false;
+            // Animation complete, begin slow tumble
+            groupRef.current.position.y = 0;
+            if (pentGroupRef.current) pentGroupRef.current.visible = false;
 
-            // Slow tumble starting FROM the base orientation
             const isHovered = hoveredFaceRef.current !== null;
             const targetSpeed = isHovered ? ROTATE_SPEED * 0.15 : ROTATE_SPEED;
-            // Frame-independent lerp for smooth transition
             speedRef.current = THREE.MathUtils.lerp(speedRef.current, targetSpeed, 5 * delta);
 
             tumbleAngleRef.current += speedRef.current * delta;
