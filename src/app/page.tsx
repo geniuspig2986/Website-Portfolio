@@ -109,6 +109,11 @@ export default function Home() {
       </div>
 
       <section className="relative w-full overflow-hidden" style={{ height: '100dvh' }}>
+        <div className={`pointer-events-none absolute inset-0 z-[1] transition-opacity duration-500 ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_68%_42%,rgba(8,145,178,0.08),transparent_55%)] dark:bg-[radial-gradient(ellipse_at_68%_42%,rgba(34,211,238,0.07),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_12%_85%,rgba(99,102,241,0.05),transparent_50%)] dark:bg-[radial-gradient(ellipse_at_12%_85%,rgba(129,140,248,0.05),transparent_50%)]" />
+        </div>
+
         <div className={`pointer-events-none absolute inset-y-0 left-0 z-[200] flex w-full max-w-xl lg:w-[40%] lg:max-w-none flex-col justify-center px-6 sm:px-10 lg:px-12 transition-opacity duration-500 ease-in-out ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
           <TerminalText onContact={() => setContactOpen(true)} />
         </div>

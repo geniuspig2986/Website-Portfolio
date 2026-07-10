@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AWARD_CHIPS, EDUCATION, EXPERIENCE, LINKS, SKILL_GROUPS } from "@/data/profile";
+import Reveal from "@/components/home/Reveal";
 
 // Below-the-fold recruiter sections for the home page: experience/education,
 // skills, awards strip, and contact footer. Project grid lives in ProjectGrid.
@@ -9,9 +10,11 @@ import { AWARD_CHIPS, EDUCATION, EXPERIENCE, LINKS, SKILL_GROUPS } from "@/data/
 export function ExperienceEducation() {
     return (
         <section id="experience" className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-16">
-            <p className="font-mono text-xs tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-2">// experience</p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-8">Experience & Education</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <Reveal>
+                <p className="font-mono text-xs tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-2">// experience</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-8">Experience & Education</h2>
+            </Reveal>
+            <Reveal delay={0.1} className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 <div className="lg:col-span-2 flex flex-col gap-5">
                     {EXPERIENCE.map((e) => {
                         const body = (
@@ -28,7 +31,7 @@ export function ExperienceEducation() {
                         const cardClass =
                             "p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md";
                         return e.href ? (
-                            <Link key={e.org} href={e.href} className={`${cardClass} block hover:border-cyan-500/60 dark:hover:border-cyan-500/50 transition-colors`}>
+                            <Link key={e.org} href={e.href} className={`${cardClass} block hover:border-cyan-500/60 dark:hover:border-cyan-500/50 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/10 dark:hover:shadow-cyan-400/5 transition-all duration-300`}>
                                 {body}
                             </Link>
                         ) : (
@@ -49,7 +52,7 @@ export function ExperienceEducation() {
                         </div>
                     ))}
                 </div>
-            </div>
+            </Reveal>
         </section>
     );
 }
@@ -57,9 +60,11 @@ export function ExperienceEducation() {
 export function SkillsSection() {
     return (
         <section id="skills" className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-16">
-            <p className="font-mono text-xs tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-2">// skills</p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-8">Skills</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <Reveal>
+                <p className="font-mono text-xs tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-2">// skills</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-8">Skills</h2>
+            </Reveal>
+            <Reveal delay={0.1} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {SKILL_GROUPS.map((g) => (
                     <div key={g.label} className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md">
                         <p className="font-mono text-[11px] tracking-widest uppercase text-zinc-500 mb-3">{g.label}</p>
@@ -67,7 +72,7 @@ export function SkillsSection() {
                             {g.items.map((s) => (
                                 <span
                                     key={s}
-                                    className="font-mono text-[11px] tracking-wide px-2.5 py-1 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-700 dark:text-zinc-300"
+                                    className="font-mono text-[11px] tracking-wide px-2.5 py-1 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-700 dark:text-zinc-300 hover:border-cyan-500/50 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors"
                                 >
                                     {s}
                                 </span>
@@ -75,7 +80,7 @@ export function SkillsSection() {
                         </div>
                     </div>
                 ))}
-            </div>
+            </Reveal>
         </section>
     );
 }
@@ -83,19 +88,21 @@ export function SkillsSection() {
 export function AwardsStrip() {
     return (
         <section id="awards" className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-16">
-            <p className="font-mono text-xs tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-2">// recognition</p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-8">Awards</h2>
-            <div className="flex flex-wrap gap-3">
+            <Reveal>
+                <p className="font-mono text-xs tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-2">// recognition</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-8">Awards</h2>
+            </Reveal>
+            <Reveal delay={0.1} className="flex flex-wrap gap-3">
                 {AWARD_CHIPS.map((a) => (
                     <Link
                         key={a}
                         href="/projects/awards"
-                        className="font-mono text-xs px-4 py-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md text-zinc-700 dark:text-zinc-300 hover:border-amber-400/60 transition-colors"
+                        className="font-mono text-xs px-4 py-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md text-zinc-700 dark:text-zinc-300 hover:border-amber-400/60 hover:text-amber-700 dark:hover:text-amber-400 hover:-translate-y-0.5 hover:shadow-md hover:shadow-amber-500/10 transition-all duration-300"
                     >
                         {a}
                     </Link>
                 ))}
-            </div>
+            </Reveal>
         </section>
     );
 }
@@ -103,7 +110,7 @@ export function AwardsStrip() {
 export function HomeFooter({ onContact }: { onContact: () => void }) {
     return (
         <footer className="w-full border-t border-zinc-200 dark:border-zinc-800 mt-8">
-            <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+            <Reveal className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
                 <div>
                     <p className="font-mono text-xs tracking-widest uppercase text-cyan-600 dark:text-cyan-500 mb-2">// contact</p>
                     <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">Let&apos;s talk</h2>
@@ -148,7 +155,7 @@ export function HomeFooter({ onContact }: { onContact: () => void }) {
                         contact
                     </button>
                 </div>
-            </div>
+            </Reveal>
         </footer>
     );
 }
