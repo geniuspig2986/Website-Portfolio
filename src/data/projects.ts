@@ -99,28 +99,12 @@ export const PROJECTS: ProjectMeta[] = [
         category: "ml",
     },
     {
-        slug: "research",
-        title: "Systems & Robotics Research",
-        blurb: "Low-level systems and robotics research — ROS architectures, C++/Python tooling, and reproducible, containerized experiments.",
-        tags: ["C++", "ROS", "Docker"],
-        accent: "#06b6d4",
-        category: "robotics",
-    },
-    {
         slug: "air-mouse",
         title: "Air Mouse",
         blurb: "A motion-controlled pointer that reads hand movement in free space — IMU sensing, sensor fusion, and low-latency firmware mapped onto standard input.",
         tags: ["Embedded", "IMU", "USB HID"],
         accent: "#6366f1",
         category: "hardware",
-    },
-    {
-        slug: "quant",
-        title: "Quantitative Analysis",
-        blurb: "Quantitative financial research — building and backtesting data-driven strategies, judged on risk-adjusted performance rather than raw return.",
-        tags: ["Python", "pandas", "Backtesting"],
-        accent: "#22c55e",
-        category: "ml",
     },
 ];
 

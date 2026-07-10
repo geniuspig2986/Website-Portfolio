@@ -417,18 +417,19 @@ const FACE_DEFINITIONS: FaceData[] = [
             </FaceCard>
         ),
     },
-    // ── 10: Systems & Robotics Research ──────────────────────────────────────
+    // ── 10: Coming soon (frosted placeholder) ────────────────────────────────
     {
         direction: [phi, 0, -1],
-        label: "Research",
-        slug: "research",
-        accent: "rgba(6,182,212,0.5)",
-        description: projectBySlug("research").blurb,
+        label: "Coming Soon",
+        slug: "coming-soon",
+        accent: "rgba(113,113,122,0.4)",
+        description: "More projects in the works.",
+        isFrosted: true,
         renderContent: (handlers, isDark, isReturning) => (
-            <FaceCard accent="rgba(6,182,212,0.5)" slug="research" index={10} isDark={isDark} isReturning={isReturning} {...handlers}>
-                <span className="text-[8px] font-bold tracking-widest text-cyan-600 uppercase">Systems</span>
-                <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Robotics Research</h3>
-                <p className="text-[9px] text-zinc-500 dark:text-zinc-400">ROS · C++ · Docker</p>
+            <FaceCard accent="rgba(113,113,122,0.4)" slug="coming-soon" index={10} isDark={isDark} isReturning={isReturning} frosted {...handlers}>
+                <div className="absolute inset-0 animate-shimmer pointer-events-none" />
+                <span className="text-2xl select-none">🔒</span>
+                <p className="text-[9px] font-bold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">Coming Soon</p>
             </FaceCard>
         ),
     },
