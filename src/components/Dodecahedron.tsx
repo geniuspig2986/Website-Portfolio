@@ -188,7 +188,7 @@ function FaceCard({
         <div
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            className="animate-line relative cursor-pointer group transition-all duration-300 hover:scale-[1.05] block"
+            className="animate-line relative cursor-pointer group select-none transition-all duration-300 hover:scale-[1.05] block"
             style={{
                 width: "205px",
                 height: "205px",
@@ -454,7 +454,7 @@ const FACE_DEFINITIONS: FaceData[] = [
 function TerminalText({ text, isReturning = false }: { text: string; isReturning?: boolean }) {
     const [charCount, setCharCount] = useState(0);
     const countRef = useRef(0);
-    const speed = isReturning ? 15 : 30;
+    const speed = isReturning ? 8 : 12;
 
     useEffect(() => {
         setCharCount(0);
@@ -488,8 +488,8 @@ function ProjectDetailsWindow({ face, isExpanding, isDark, isReturning }: { face
 
     useEffect(() => {
         if (!face && !isExpanding) {
-            // Linger for 1.5 seconds after losing focus/unhovering before fading out
-            const timer = setTimeout(() => setLingerVisible(false), 1500);
+            // Brief linger after unhovering so quick face-to-face moves don't flicker
+            const timer = setTimeout(() => setLingerVisible(false), 300);
             return () => clearTimeout(timer);
         } else {
             setLingerVisible(true);
@@ -525,8 +525,10 @@ function ProjectDetailsWindow({ face, isExpanding, isDark, isReturning }: { face
 
     return (
         <div
-            className={`flex flex-col gap-5 z-50 pointer-events-none transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${
-                isExpanding ? "w-[100vw] h-[100vh] mr-0 mb-0 justify-center items-center p-[5vw]" : "w-[400px] mr-[5vw] mb-12 p-6"
+            className={`flex flex-col gap-5 z-50 pointer-events-none select-none transition-all ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${
+                isExpanding
+                    ? "duration-[800ms] w-[100vw] h-[100vh] mr-0 mb-0 justify-center items-center p-[5vw]"
+                    : "duration-200 w-[400px] mr-[5vw] mb-12 p-6"
             }`}
             style={{
                 background: bgColor,
@@ -875,7 +877,17 @@ export default function Dodecahedron({ isReturning = false, isFadingIn = false }
 
     const overlayPortal = useRef<HTMLElement>(null!);
     useEffect(() => {
-        overlayPortal.current = document.body;
+        // Dedicated body-level overlay stacked above the route wrapper
+        // (PageTransition renders at z-10; drei's portal root is z-auto, so
+        // portaling straight into document.body paints the panel UNDER the page).
+        const el = document.createElement("div");
+        el.style.cssText = "position:fixed;inset:0;z-index:999;pointer-events:none;";
+        document.body.appendChild(el);
+        overlayPortal.current = el;
+        return () => {
+            document.body.removeChild(el);
+            overlayPortal.current = null!;
+        };
     }, []);
 
     return (
