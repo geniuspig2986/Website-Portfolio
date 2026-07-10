@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
+import SiteBackground from "@/components/SiteBackground";
 
 // Shared scaffold for project subpages: scroll layer, animated back-nav, and a
 // terminal-style header. The page-to-page route transition is handled globally
@@ -24,6 +25,7 @@ export default function ProjectLayout({
 }) {
     return (
         <div className="relative h-screen w-full bg-zinc-50 dark:bg-zinc-950 font-sans transition-colors overflow-y-auto overflow-x-hidden pt-24 pb-24">
+            <SiteBackground />
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }

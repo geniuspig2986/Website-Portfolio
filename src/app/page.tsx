@@ -6,9 +6,9 @@ import Dodecahedron from "@/components/Dodecahedron";
 import ThemeToggle from "@/components/ThemeToggle";
 import ContactModal from "@/components/ContactModal";
 import ProjectGrid from "@/components/home/ProjectGrid";
+import SiteBackground from "@/components/SiteBackground";
 import { AwardsStrip, ExperienceEducation, HomeFooter, SkillsSection } from "@/components/home/HomeSections";
 import { LINKS } from "@/data/profile";
-import { useTheme } from "@/components/ThemeProvider";
 import { useState, useEffect } from "react";
 
 const TERMINAL_LINES = [
@@ -77,8 +77,6 @@ function TerminalText({ onContact }: { onContact: () => void }) {
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 export default function Home() {
-  const { theme } = useTheme();
-  const canvasBg = theme === "dark" ? "#0a0a0a" : "#ffffff";
   const [isExpanding, setIsExpanding] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [finePointer, setFinePointer] = useState(false);
@@ -104,16 +102,13 @@ export default function Home() {
 
   return (
     <main className="relative h-screen w-screen overflow-y-auto overflow-x-hidden bg-white dark:bg-zinc-950">
-      <div className={`transition-opacity duration-500 ${isExpanding ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <SiteBackground />
+
+      <div className={`relative z-10 transition-opacity duration-500 ${isExpanding ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <ThemeToggle />
       </div>
 
-      <section className="relative w-full overflow-hidden" style={{ height: '100dvh' }}>
-        <div className={`pointer-events-none absolute inset-0 z-[1] transition-opacity duration-500 ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_68%_42%,rgba(8,145,178,0.08),transparent_55%)] dark:bg-[radial-gradient(ellipse_at_68%_42%,rgba(34,211,238,0.07),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_12%_85%,rgba(99,102,241,0.05),transparent_50%)] dark:bg-[radial-gradient(ellipse_at_12%_85%,rgba(129,140,248,0.05),transparent_50%)]" />
-        </div>
-
+      <section className="relative z-10 w-full overflow-hidden" style={{ height: '100dvh' }}>
         <div className={`pointer-events-none absolute inset-y-0 left-0 z-[200] flex w-full max-w-xl lg:w-[40%] lg:max-w-none flex-col justify-center px-6 sm:px-10 lg:px-12 transition-opacity duration-500 ease-in-out ${isExpanding ? 'opacity-0' : 'opacity-100'}`}>
           <TerminalText onContact={() => setContactOpen(true)} />
         </div>
@@ -121,7 +116,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0 pointer-events-none">
           <Canvas
             camera={{ position: [0, 0, 8], fov: 50 }}
-            style={{ background: canvasBg, pointerEvents: "auto" }}
+            style={{ pointerEvents: "auto" }}
             gl={{ localClippingEnabled: true, antialias: true }}
           >
             <ambientLight intensity={0.8} />
@@ -147,11 +142,13 @@ export default function Home() {
         </div>
       </section>
 
-      <ProjectGrid />
-      <ExperienceEducation />
-      <SkillsSection />
-      <AwardsStrip />
-      <HomeFooter onContact={() => setContactOpen(true)} />
+      <div className="relative z-10">
+        <ProjectGrid />
+        <ExperienceEducation />
+        <SkillsSection />
+        <AwardsStrip />
+        <HomeFooter onContact={() => setContactOpen(true)} />
+      </div>
 
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
     </main>
