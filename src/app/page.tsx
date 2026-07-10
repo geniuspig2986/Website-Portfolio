@@ -103,7 +103,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative w-screen overflow-y-auto overflow-x-hidden bg-white dark:bg-zinc-950" style={{ minHeight: '100vh' }}>
+    <main className="relative h-screen w-screen overflow-y-auto overflow-x-hidden bg-white dark:bg-zinc-950">
       <div className={`transition-opacity duration-500 ${isExpanding ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <ThemeToggle />
       </div>
@@ -113,17 +113,7 @@ export default function Home() {
           <TerminalText onContact={() => setContactOpen(true)} />
         </div>
 
-        <div
-          className="absolute inset-0 z-0"
-          style={{ pointerEvents: "none" }}
-          onWheel={(e) => {
-            // Forward wheel events to the main scrollable container
-            const main = e.currentTarget.closest("main");
-            if (main) {
-              main.scrollBy(0, e.deltaY);
-            }
-          }}
-        >
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <Canvas
             camera={{ position: [0, 0, 8], fov: 50 }}
             style={{ background: canvasBg, pointerEvents: "auto" }}
