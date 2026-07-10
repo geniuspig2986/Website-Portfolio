@@ -113,11 +113,21 @@ export default function Home() {
           <TerminalText onContact={() => setContactOpen(true)} />
         </div>
 
-        <div className="absolute inset-0 z-0 pointer-events-none">
+        <div
+          className="absolute inset-0 z-0"
+          style={{ pointerEvents: "none" }}
+          onWheel={(e) => {
+            // Forward wheel events to the main scrollable container
+            const main = e.currentTarget.closest("main");
+            if (main) {
+              main.scrollBy(0, e.deltaY);
+            }
+          }}
+        >
           <Canvas
             camera={{ position: [0, 0, 8], fov: 50 }}
             style={{ background: canvasBg, pointerEvents: "auto" }}
-            gl={{ localClippingEnabled: true }}
+            gl={{ localClippingEnabled: true, antialias: true }}
           >
             <ambientLight intensity={0.8} />
             <pointLight position={[10, 10, 10]} intensity={0.6} />
