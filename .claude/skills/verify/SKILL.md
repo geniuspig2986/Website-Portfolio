@@ -5,6 +5,11 @@ description: Build/launch/drive recipe for verifying changes to this portfolio s
 
 # Verifying this repo
 
+> **Owner preference (July 2026): do NOT run Playwright/headless-browser tests.**
+> Verify with `npm run build`, then ask Simon to test manually and tell him
+> exactly which flows to exercise. The browser recipe below is kept only for
+> reference if he explicitly asks for an automated check.
+
 ## Launch
 
 - `npm run dev` — but check first: the user often already has a dev server on **http://localhost:3000** (`curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/`). If it responds 200, use it — Next.js (Turbopack) hot-reloads uncommitted edits, and starting a second instance fails on the `.next/dev/lock` anyway.
