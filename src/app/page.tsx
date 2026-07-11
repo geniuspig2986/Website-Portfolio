@@ -113,7 +113,7 @@ export default function Home() {
           <TerminalText onContact={() => setContactOpen(true)} />
         </div>
 
-        <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 z-0 pointer-events-none animate-fade-in">
           <Canvas
             camera={{ position: [0, 0, 8], fov: 50 }}
             style={{ pointerEvents: "auto" }}
@@ -121,7 +121,7 @@ export default function Home() {
           >
             <ambientLight intensity={0.8} />
             <pointLight position={[10, 10, 10]} intensity={0.6} />
-            <Dodecahedron isReturning={false} isFadingIn />
+            <Dodecahedron isReturning={false} />
             {finePointer && (
               <OrbitControls
                 enableZoom={false}

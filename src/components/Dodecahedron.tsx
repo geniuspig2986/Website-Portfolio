@@ -15,6 +15,12 @@ const RADIUS = 2.5;
 const phi = (1 + Math.sqrt(5)) / 2;
 const ROTATE_SPEED = (2 * Math.PI) / 30; // 360° per 30s (slow tumble)
 const LINE_THICKNESS = 0.025; // Thicker wireframe
+const ENTRANCE_DURATION = 0.75; // s — drop-in from above on mount
+const ENTRANCE_DROP = 0.9; // world units the solid starts above its rest position
+const PANEL_SETTLE_DELAY = ENTRANCE_DURATION - 0.4; // panels wait for the drop to land
+const PANEL_SETTLE_DURATION = 0.3; // s — fade + settle onto the face
+const PANEL_SETTLE_DISTANCE = 0.2; // world units above the face, along its normal
+const PANEL_SETTLE_STAGGER = 0.05; // s — each panel settles slightly after the previous one
 
 
 
@@ -157,13 +163,11 @@ function FaceCard({
     accent,
     slug,
     children,
-    index = 0,
     frosted = false,
     isDark = false,
     onMouseEnter,
     onMouseLeave,
     onClick,
-    isReturning = false,
 }: {
     accent: string;
     slug: string;
@@ -176,25 +180,22 @@ function FaceCard({
     onClick?: (e: React.MouseEvent) => void;
     isReturning?: boolean;
 }) {
-    const delay = isReturning ? index * 0.05 : index * 0.08;
-    const duration = isReturning ? "0.2s" : "0.6s";
-
     // Points corresponding exactly to PENTAGON_CLIP
     // (50% 0%, 97.55% 34.55%, 79.39% 90.45%, 20.61% 90.45%, 2.45% 34.55%)
     // scaled by 205 (width/height of FaceCard)
     const points = "102.5,0 199.9775,70.8275 162.7495,185.4225 42.2505,185.4225 5.0225,70.8275";
 
+    // No per-face entrance: panels are part of the solid, which fades in as one
+    // unit via .animate-fade-in on the canvas wrapper (page.tsx).
     const wrapper = (
         <div
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            className="animate-line relative cursor-pointer group select-none transition-all duration-300 hover:scale-[1.05] block"
+            className="relative cursor-pointer group select-none transition-all duration-300 hover:scale-[1.05] block"
             style={{
                 width: "205px",
                 height: "205px",
                 clipPath: PENTAGON_CLIP,
-                animationDuration: duration,
-                animationDelay: `${delay}s`,
             }}
         >
             {/* Background & Border SVG mimicking CSS inset borders */}
@@ -677,14 +678,31 @@ function computeFaces(geo: THREE.DodecahedronGeometry | THREE.BufferGeometry, al
     });
 }
 
-function FacePanel({ face, onHoverFace, onClickFace, isDark, isReturning }: { face: ComputedFace, onHoverFace: (face: FaceData | null) => void, onClickFace: (face: FaceData) => void, isDark: boolean, isReturning: boolean }) {
+function FacePanel({ face, onHoverFace, onClickFace, isDark, isReturning, reducedMotion, settleDelay }: { face: ComputedFace, onHoverFace: (face: FaceData | null) => void, onClickFace: (face: FaceData) => void, isDark: boolean, isReturning: boolean, reducedMotion: boolean, settleDelay: number }) {
     const groupRef = useRef<THREE.Group>(null);
+    const offsetGroupRef = useRef<THREE.Group>(null);
     const htmlRef = useRef<HTMLDivElement>(null);
     // Use state instead of ref for visibility to avoid reading ref during render
     const [isFacingFront, setIsFacingFront] = useState(true);
+    // Accumulated from the first rendered frame (not the R3F clock — see the
+    // entrance timer note in Dodecahedron below).
+    const settleTimeRef = useRef(0);
 
-    useFrame(({ camera }) => {
+    useFrame(({ camera }, delta) => {
         if (!groupRef.current || !htmlRef.current) return;
+
+        // Entrance: stay transparent through the solid's drop, then fade in
+        // while settling onto the face along its normal (local +Z).
+        settleTimeRef.current = Math.min(
+            settleDelay + PANEL_SETTLE_DURATION,
+            settleTimeRef.current + Math.min(delta, 1 / 30)
+        );
+        const st = Math.max(0, (settleTimeRef.current - settleDelay) / PANEL_SETTLE_DURATION);
+        const settleEase = 1 - Math.pow(1 - st, 3);
+        if (offsetGroupRef.current) {
+            offsetGroupRef.current.position.z = reducedMotion ? 0 : PANEL_SETTLE_DISTANCE * (1 - settleEase);
+        }
+
         const worldPos = new THREE.Vector3();
         groupRef.current.getWorldPosition(worldPos);
 
@@ -696,10 +714,17 @@ function FacePanel({ face, onHoverFace, onClickFace, isDark, isReturning }: { fa
         // If dot product > 0, the face normal is pointing roughly towards the camera
         const isFacing = worldNormal.dot(cameraDir) > -0.05;
 
+        // Opacity is written from the frame loop (not initial styles) so the
+        // panel stays invisible until the entrance settle begins — this also
+        // guarantees drei has positioned it before it can ever be seen.
+        const targetOpacity = isFacing && st > 0 ? "1" : "0";
+        if (htmlRef.current.style.opacity !== targetOpacity) {
+            htmlRef.current.style.opacity = targetOpacity;
+            htmlRef.current.style.pointerEvents = isFacing ? "auto" : "none";
+        }
+
         if (isFacingFront !== isFacing) {
             setIsFacingFront(isFacing);
-            htmlRef.current.style.opacity = isFacing ? "1" : "0";
-            htmlRef.current.style.pointerEvents = isFacing ? "auto" : "none";
             if (!isFacing) {
                 onHoverFace(null); // Force unhover if it rotates away while hovered
             }
@@ -708,30 +733,29 @@ function FacePanel({ face, onHoverFace, onClickFace, isDark, isReturning }: { fa
 
     return (
         <group ref={groupRef} position={face.position} quaternion={face.quaternion}>
-            <Html
-                transform
-                center
-                distanceFactor={6}
-                zIndexRange={[1000, 0]}
-                wrapperClass="z-50"
-            >
-                <div ref={htmlRef} style={{ transition: 'opacity 0.4s ease-in-out', pointerEvents: 'auto' }}>
-                    {face.data.renderContent({
-                        onMouseEnter: () => { if (isFacingFront) onHoverFace(face.data); },
-                        onMouseLeave: () => { if (isFacingFront) onHoverFace(null); },
-                        onClick: (e: React.MouseEvent) => { if (isFacingFront) onClickFace(face.data); }
-                    }, isDark, isReturning)}
-                </div>
-            </Html>
+            <group ref={offsetGroupRef} position-z={PANEL_SETTLE_DISTANCE}>
+                <Html
+                    transform
+                    center
+                    distanceFactor={6}
+                    zIndexRange={[1000, 0]}
+                    wrapperClass="z-50"
+                >
+                    <div ref={htmlRef} style={{ opacity: 0, transition: 'opacity 0.4s ease-in-out', pointerEvents: 'none' }}>
+                        {face.data.renderContent({
+                            onMouseEnter: () => { if (isFacingFront) onHoverFace(face.data); },
+                            onMouseLeave: () => { if (isFacingFront) onHoverFace(null); },
+                            onClick: (e: React.MouseEvent) => { if (isFacingFront) onClickFace(face.data); }
+                        }, isDark, isReturning)}
+                    </div>
+                </Html>
+            </group>
         </group>
     );
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export default function Dodecahedron({ isReturning = false, isFadingIn = false }: { isReturning?: boolean; isFadingIn?: boolean }) {
-    const FADE_IN_DURATION = isFadingIn ? 0.8 : (isReturning ? 0.4 : 0.8);
-    const PANEL_DELAY_MS = isFadingIn ? 800 : (FADE_IN_DURATION * 1000);
-
+export default function Dodecahedron({ isReturning = false }: { isReturning?: boolean }) {
     const router = useRouter();
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -767,7 +791,6 @@ export default function Dodecahedron({ isReturning = false, isFadingIn = false }
     const faces = useMemo(() => computeFaces(alignedGeo, alignQ), [alignedGeo, alignQ]);
     const pentGeo = useMemo(() => createPentagonGeo(), []);
     const pentPoints = useMemo(() => getPentagonPoints(), []);
-    const [showPanels, setShowPanels] = useState(false);
     const clipPlane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, 1, 0), 4), []);
 
     // Sorted edges from aligned geometry
@@ -776,11 +799,6 @@ export default function Dodecahedron({ isReturning = false, isFadingIn = false }
 
     const edgeCylindersRef = useRef<THREE.Mesh[]>([]);
     const pentCylindersRef = useRef<THREE.Mesh[]>([]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setShowPanels(true), PANEL_DELAY_MS);
-        return () => clearTimeout(timer);
-    }, []);
 
     // Helper to update a cylinder mesh between two points
     const updateCylinder = (mesh: THREE.Mesh, p1: THREE.Vector3, p2: THREE.Vector3) => {
@@ -819,58 +837,54 @@ export default function Dodecahedron({ isReturning = false, isFadingIn = false }
     const speedRef = useRef(ROTATE_SPEED);
     const tumbleAngleRef = useRef(0);
 
-    useFrame(({ clock, camera }, delta) => {
+    // Entrance: the fully assembled solid (panels attached) drops in from
+    // above while the canvas wrapper fades in (page.tsx). Skipped for
+    // reduced-motion users, who just get the fade.
+    const prefersReducedMotion = useMemo(
+        () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        []
+    );
+
+    // Accumulated from the first *rendered* frame — the R3F clock starts during
+    // canvas init (often well before first paint), so keying the drop on it
+    // makes the entrance begin mid-flight and read as a snap.
+    const entranceTimeRef = useRef(0);
+
+    useFrame((_, delta) => {
         if (!groupRef.current) return;
-        const elapsed = clock.getElapsedTime();
 
-        if (elapsed < FADE_IN_DURATION) {
-            // Simple fade-in from bottom
-            const progress = Math.min(1, elapsed / FADE_IN_DURATION);
-            groupRef.current.position.y = -1 + progress * 1;
-            groupRef.current.quaternion.copy(tiltQuat);
+        entranceTimeRef.current = Math.min(
+            ENTRANCE_DURATION,
+            entranceTimeRef.current + Math.min(delta, 1 / 30)
+        );
+        const t = entranceTimeRef.current / ENTRANCE_DURATION;
+        const easeOut = 1 - Math.pow(1 - t, 3);
+        groupRef.current.position.y = prefersReducedMotion ? 0 : ENTRANCE_DROP * (1 - easeOut);
+        if (pentGroupRef.current) pentGroupRef.current.visible = false;
 
-            if (pentGroupRef.current) pentGroupRef.current.visible = false;
-            if (edgeLinesGroupRef.current) edgeLinesGroupRef.current.visible = false;
+        const isHovered = hoveredFaceRef.current !== null;
+        const targetSpeed = isHovered ? ROTATE_SPEED * 0.15 : ROTATE_SPEED;
+        speedRef.current = THREE.MathUtils.lerp(speedRef.current, targetSpeed, 5 * delta);
 
-            // Fade all children
-            groupRef.current.traverse((child: any) => {
-                if (child.material) {
-                    if (child.material.opacity !== undefined) {
-                        child.material.opacity = progress;
-                    }
-                }
-            });
-            clipPlane.constant = -0.5;
+        tumbleAngleRef.current += speedRef.current * delta;
 
-        } else {
-            // Animation complete, begin slow tumble
-            groupRef.current.position.y = 0;
-            if (pentGroupRef.current) pentGroupRef.current.visible = false;
+        const tumbleT = tumbleAngleRef.current;
+        qx.setFromAxisAngle(axisX, tumbleT);
+        qy.setFromAxisAngle(axisY, -tumbleT);
+        tumbleQuat.copy(qx).multiply(qy);
+        tempQuat.copy(tumbleQuat).premultiply(tiltQuat);
+        groupRef.current.quaternion.copy(tempQuat);
 
-            const isHovered = hoveredFaceRef.current !== null;
-            const targetSpeed = isHovered ? ROTATE_SPEED * 0.15 : ROTATE_SPEED;
-            speedRef.current = THREE.MathUtils.lerp(speedRef.current, targetSpeed, 5 * delta);
-
-            tumbleAngleRef.current += speedRef.current * delta;
-
-            const tumbleT = tumbleAngleRef.current;
-            qx.setFromAxisAngle(axisX, tumbleT);
-            qy.setFromAxisAngle(axisY, -tumbleT);
-            tumbleQuat.copy(qx).multiply(qy);
-            tempQuat.copy(tumbleQuat).premultiply(tiltQuat);
-            groupRef.current.quaternion.copy(tempQuat);
-
-            // Set all edges to final positions
-            if (edgeLinesGroupRef.current) {
-                edgeLinesGroupRef.current.visible = true;
-                for (let i = 0; i < sortedEdges.length; i++) {
-                    const mesh = edgeCylindersRef.current[i];
-                    if (!mesh) continue;
-                    const seg = sortedEdges[i];
-                    v1.set(seg.ax, seg.ay, seg.az);
-                    v2.set(seg.bx, seg.by, seg.bz);
-                    updateCylinder(mesh, v1, v2);
-                }
+        // Set all edges to final positions
+        if (edgeLinesGroupRef.current) {
+            edgeLinesGroupRef.current.visible = true;
+            for (let i = 0; i < sortedEdges.length; i++) {
+                const mesh = edgeCylindersRef.current[i];
+                if (!mesh) continue;
+                const seg = sortedEdges[i];
+                v1.set(seg.ax, seg.ay, seg.az);
+                v2.set(seg.bx, seg.by, seg.bz);
+                updateCylinder(mesh, v1, v2);
             }
         }
     });
@@ -917,19 +931,16 @@ export default function Dodecahedron({ isReturning = false, isFadingIn = false }
             </group>
 
             {/* ── Face panels — positioned from aligned geometry ── */}
-            {showPanels &&
-                faces.map((face, i) => (
-                    <FacePanel key={`face-${i}`} face={face} onHoverFace={onHoverFace} onClickFace={onClickFace} isDark={isDark} isReturning={isReturning} />
-                ))}
+            {faces.map((face, i) => (
+                <FacePanel key={`face-${i}`} face={face} onHoverFace={onHoverFace} onClickFace={onClickFace} isDark={isDark} isReturning={isReturning} reducedMotion={prefersReducedMotion} settleDelay={PANEL_SETTLE_DELAY + i * PANEL_SETTLE_STAGGER} />
+            ))}
 
             {/* ── 2D Overlay Window (Shown on hover) ── */}
-            {showPanels && (
-                <Html center portal={overlayPortal} zIndexRange={[999999, 999998]} style={{ pointerEvents: 'none' }}>
-                    <div className="pointer-events-none w-[100vw] h-[100vh] flex items-center justify-end relative z-[999999] overflow-hidden">
-                        <ProjectDetailsWindow face={expandingFace || hoveredFace} isExpanding={!!expandingFace} isDark={isDark} isReturning={isReturning} />
-                    </div>
-                </Html>
-            )}
+            <Html center portal={overlayPortal} zIndexRange={[999999, 999998]} style={{ pointerEvents: 'none' }}>
+                <div className="pointer-events-none w-[100vw] h-[100vh] flex items-center justify-end relative z-[999999] overflow-hidden">
+                    <ProjectDetailsWindow face={expandingFace || hoveredFace} isExpanding={!!expandingFace} isDark={isDark} isReturning={isReturning} />
+                </div>
+            </Html>
         </group>
     );
 }
