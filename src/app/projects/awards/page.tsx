@@ -6,6 +6,20 @@ const ACCENT = "#f59e0b";
 
 const AWARDS = [
     {
+        name: "FTC Innovate Award — 2nd Place",
+        org: "European Premier Event",
+        kind: "Robotics",
+        note: "Recognized for the design of Team Parabellum’s robot — custom chassis, capstan-drive reducer, and a telescoping linear extension with a differential wrist.",
+        medal: "🏆",
+    },
+    {
+        name: "ARC Competition — 3rd (1v1), 8th (3v3)",
+        org: "Team Parabellum",
+        kind: "Robotics",
+        note: "Placed third in the 1v1 bracket and eighth in 3v3 alliance play.",
+        medal: "🏆",
+    },
+    {
         name: "HardHaQ 2025 — 1st Place",
         org: "North American Quantum Consortium",
         kind: "Hackathon",

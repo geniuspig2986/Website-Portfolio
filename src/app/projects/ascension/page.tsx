@@ -60,8 +60,8 @@ export default function AscensionPage() {
                         <div className="p-6 md:p-8 bg-zinc-100/10 dark:bg-zinc-900/40 min-h-[280px] flex flex-col gap-6">
                             <SpecRows
                                 rows={[
-                                    { label: "Role", value: "Computer Vision Developer" },
-                                    { label: "Since", value: "Sept 2025" },
+                                    { label: "Role", value: "Software Developer" },
+                                    { label: "Period", value: "Sept 2025 – June 2026" },
                                     { label: "Platform", value: "Jetson Orin Nano · ROS 2" },
                                     { label: "Team", value: "Student design team" },
                                     { label: "Dataset", value: "12,000+ images · 4× classes" },
